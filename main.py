@@ -1,5 +1,9 @@
-import subprocess
+import packages
+
 def main():
+
+    #inizializza moduli
+    pack = packages.Packages()
 
     while(1):
 
@@ -10,12 +14,7 @@ def main():
             case "close":
                 break
             case "packages":
-                install_packages()
-
-def install_packages(packages):
-    run = ["./install.sh"] + packages
-    exec = subprocess.call(run)
-    return exec
+                pack.install_packages()
 
 
 if __name__=="__main__":

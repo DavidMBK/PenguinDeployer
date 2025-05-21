@@ -1,0 +1,1 @@
+# Configurare la shell e hostname.

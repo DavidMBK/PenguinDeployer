@@ -1,0 +1,1 @@
+# salva e ripristina le configurazioni.

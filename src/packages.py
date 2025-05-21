@@ -1,5 +1,5 @@
 import subprocess
-from module import Module
+from core/module
 
 
 class Packages(Module):

@@ -17,4 +17,3 @@ class Module:
     def configure(self):
         #funzione per permettere all'utente di impostare le configurazioni del modulo
         pass
-

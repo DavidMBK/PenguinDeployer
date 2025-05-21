@@ -1,6 +1,6 @@
 import subprocess # Per controllare i gruppi dell'utente
 import getpass # Non mostra la password mentre la scrivi
-from pam import pam # Si interfaccia con il PAM per l'autenticazione
+import pam # Si interfaccia con il PAM per l'autenticazione
 
 class Login:
     #classe che si occupa del log-in

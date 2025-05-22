@@ -4,8 +4,8 @@ from module import Module
 
 
 class Packages(Module):
-    to_install: list[str]
-    to_uninstall: list[str]
+    to_install: list[str] = []
+    to_uninstall: list[str] = []
 
     def install_packages(self):
         #esegui lo script per installare i pacchetti

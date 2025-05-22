@@ -6,7 +6,7 @@ class Module:
         #funzione per leggere le impostazioni attuali del sistema
         pass
 
-    def conf_export(self, filename):
+    def conf_export(self, configurations, filename):
         #funzione per esportare le configurazioni a un file
         pass
 

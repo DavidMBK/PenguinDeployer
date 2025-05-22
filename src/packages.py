@@ -3,7 +3,6 @@ from module import Module
 
 
 class Packages(Module):
-    selected_file: str
 
     def install_packages(self,packages):
         run = ["./src/scripts/install.sh"] + packages
@@ -19,7 +18,7 @@ class Packages(Module):
         #aggiornare nel futuro
         pass
 
-    def conf_export(self, filename):
+    def conf_export(self, configurations, filename):
         #aggiornare nel futuro
         pass
 

@@ -25,7 +25,7 @@ class Services(Module):
 
         return result.stdout
 
-    def conf_export(self, filename):
+    def conf_export(self, configurations, filename):
         #aggiornare nel futuro
         pass
 

@@ -53,16 +53,16 @@ class Packages(Module):
         self.unistall_packages()
 
 
-""" Testing
+
 if __name__ == "__main__":
     p = Packages()
     
     #testing import
-    p.conf_import("configs/packages/testconfig.config")
+    p.conf_import("src/configs/packages/testconfig.config")
     
     #testing export
-    p.conf_export("configs/packages/testconfigexp.config")
+    p.conf_export("src/configs/packages/testconfigexp.config")
     
     #testing configuration (install/uninstall)
     p.configure()
-"""
+

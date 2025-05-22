@@ -5,8 +5,8 @@ import re
 
 
 class Services(Module):
-    to_enable: list[str]
-    to_disable: list[str]
+    to_enable: list[str] = []
+    to_disable: list[str] = []
 
     def service_onoff(self, service: str, enable: bool):
         #attiva o disattiva un servizio
@@ -64,10 +64,10 @@ if __name__ == "__main__":
     s = Servicess()
 
     #testing import
-    s.conf_import("configs/services/testconfig.config")
+    s.conf_import("src/configs/services/testconfig.config")
 
     #testing export
-    s.conf_export("configs/services/testconfigexp.config")
+    s.conf_export("src/configs/services/testconfigexp.config")
 
     #testing configuration (install/uninstall)
     s.configure()

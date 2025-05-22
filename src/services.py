@@ -12,9 +12,9 @@ class Services(Module):
         #attiva o disattiva un servizio
 
         if enable:
-            run = ["./service_onoff.sh"] + " enable " + service
+            run = ["./src/scripts/service_onoff.sh"] + ["enable"] +  [service]
         else:
-            run = ["./service_onoff.sh"] + " disable " + service
+            run = ["./src/scripts/service_onoff.sh"] +  ["disable"]  + [service]
 
         subprocess.call(run)
 
@@ -59,9 +59,9 @@ class Services(Module):
             self.service_onoff(service, False)
 
 
-""" Testing
+"""
 if __name__ == "__main__":
-    s = Servicess()
+    s = Services()
 
     #testing import
     s.conf_import("src/configs/services/testconfig.config")

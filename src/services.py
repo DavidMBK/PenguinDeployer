@@ -18,8 +18,12 @@ class Services(Module):
         subprocess.call(run)
 
     def sys_read(self):
-        #funzione per leggere le impostazioni attuali del sistema
-        pass
+        path = ["./systemctl.sh"]
+        result = subprocess.run(path, capture_output=True, text=True)
+
+
+
+        return result.stdout
 
     def conf_export(self, filename):
         #aggiornare nel futuro

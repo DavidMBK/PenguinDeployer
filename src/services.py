@@ -26,7 +26,7 @@ class Services(Module):
 
     def conf_export(self, filename):
 
-        confexp = open(filename, 'a')
+        confexp = open(filename, 'w')
 
         for pack in self.to_enable:
             confexp.write("\n" + pack + ":" + "enable")

@@ -23,7 +23,7 @@ class Packages(Module):
 
     def conf_export(self, filename):
 
-        confexp = open(filename, 'a')
+        confexp = open(filename, 'w')
 
         for pack in self.to_install:
             confexp.write("\n" + pack + ":" + "install")

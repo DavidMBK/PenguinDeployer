@@ -6,14 +6,14 @@ class Module:
         #funzione per leggere le impostazioni attuali del sistema
         pass
 
-    def conf_export(self):
+    def conf_export(self, filename):
         #funzione per esportare le configurazioni a un file
         pass
 
-    def conf_import(self):
+    def conf_import(self, filename):
         #funzione per importare le configurazioni da un file
         pass
 
     def configure(self):
-        #funzione per permettere all'utente di impostare le configurazioni del modulo
+        #funzione per fare partile la configurazione del sistema
         pass

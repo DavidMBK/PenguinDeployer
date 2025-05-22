@@ -41,7 +41,7 @@ class Services(Module):
         ssplit = re.split(':|\n', services)
 
         i = 0
-        while i < len(ssplit) / 2:
+        while i < len(ssplit):
             if ssplit[i + 1] == "enable":
                 self.to_enable.append(ssplit[i])
             elif ssplit[i + 1] == "disable":

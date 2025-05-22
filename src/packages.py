@@ -38,7 +38,7 @@ class Packages(Module):
         psplit = re.split(':|\n', packages)
 
         i = 0
-        while i < len(psplit) / 2:
+        while i < len(psplit):
             if psplit[i + 1] == "install":
                 self.to_install.append(psplit[i])
             elif psplit[i + 1] == "uninstall":

@@ -27,10 +27,10 @@ class Packages(Module):
         confexp = open(filename,'a')
 
         for pack in self.to_install:
-            confexp.write(pack + ":" + "install")
+            confexp.write("\n" + pack + ":" + "install")
 
         for pack in self.to_uninstall:
-            confexp.write(pack + ":" + "uninstall")
+            confexp.write("\n" + pack + ":" + "uninstall")
 
 
     def conf_import(self, filename):

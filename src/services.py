@@ -22,7 +22,6 @@ class Services(Module):
         result = subprocess.run(path, capture_output=True, text=True)
 
 
-
         return result.stdout
 
     def conf_export(self, configurations, filename):

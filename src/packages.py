@@ -1,47 +1,69 @@
+import re
 import subprocess
 from module import Module
 
 
 class Packages(Module):
 
-    def install_packages(self,packages):
-        run = ["./src/scripts/install.sh"] + packages
-        sub = subprocess.call(run)
-        return sub
+    to_install: list[str]
+    to_uninstall: list[str]
 
-    def unistall_packages(self,packages):
-        run = ["./src/scripts/uninstall.sh"] + packages
-        sub = subprocess.call(run)
-        return sub
+    def install_packages(self):
+        #esegui lo script per installare i pacchetti
+        run = ["./src/scripts/install.sh"] + self.to_install
+        subprocess.call(run)
+
+    def unistall_packages(self):
+        # esegui lo script per disnstallare i pacchetti
+        run = ["./src/scripts/uninstall.sh"] + self.to_uninstall
+        subprocess.call(run)
 
     def sys_read(self):
-        #aggiornare nel futuro
+        #aggiungere
         pass
 
-    def conf_export(self, configurations, filename):
-        #aggiornare nel futuro
-        pass
+    def conf_export(self, filename):
+
+        confexp = open(filename,'a')
+
+        for pack in self.to_install:
+            confexp.write(pack + ":" + "install")
+
+        for pack in self.to_uninstall:
+            confexp.write(pack + ":" + "uninstall")
+
 
     def conf_import(self, filename):
-        self.selected_file = filename
+
+        conf = open(filename)
+        packages = conf.read()
+        psplit = re.split(':|\n', packages)
+
+        i = 0
+        while i < len(psplit) / 2:
+            if psplit[i+1] == "install":
+                self.to_install.append(psplit[i])
+            elif psplit[i+1] == "uninstall":
+                self.to_uninstall.append(psplit[i])
+            else:
+                print("Errore nel file di configurazione")
+            i += 2
 
     def configure(self):
 
-        conf = open(self.selected_file)
-        packs = conf.read()
-
-        self.install_packages(packs)
+        self.install_packages()
+        self.unistall_packages()
 
 """ Testing
 if __name__ == "__main__":
     p = Packages()
-    test_packages = ["curl", "vim"]
-
-    print("Installazione")
-    install_result = p.install_packages(test_packages)
-    print(f"Installato: {install_result}")
-
-    print("Disinstallazione")
-    uninstall_result = p.unistall_packages(test_packages)
-    print(f"Disinstallato: {install_result}")
+    
+    #testing import
+    p.conf_import("configs/packages/testconfig.config")
+    
+    #testing export
+    p.conf_export("configs/packages/testconfigexp.config")
+    
+    #testing configuration (install/uninstall)
+    p.configure()
 """

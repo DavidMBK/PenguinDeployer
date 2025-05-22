@@ -4,7 +4,6 @@ from module import Module
 
 
 class Packages(Module):
-
     to_install: list[str]
     to_uninstall: list[str]
 
@@ -24,14 +23,13 @@ class Packages(Module):
 
     def conf_export(self, filename):
 
-        confexp = open(filename,'a')
+        confexp = open(filename, 'a')
 
         for pack in self.to_install:
             confexp.write("\n" + pack + ":" + "install")
 
         for pack in self.to_uninstall:
             confexp.write("\n" + pack + ":" + "uninstall")
-
 
     def conf_import(self, filename):
 
@@ -41,9 +39,9 @@ class Packages(Module):
 
         i = 0
         while i < len(psplit) / 2:
-            if psplit[i+1] == "install":
+            if psplit[i + 1] == "install":
                 self.to_install.append(psplit[i])
-            elif psplit[i+1] == "uninstall":
+            elif psplit[i + 1] == "uninstall":
                 self.to_uninstall.append(psplit[i])
             else:
                 print("Errore nel file di configurazione")
@@ -53,6 +51,7 @@ class Packages(Module):
 
         self.install_packages()
         self.unistall_packages()
+
 
 """ Testing
 if __name__ == "__main__":

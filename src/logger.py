@@ -15,7 +15,7 @@ class Login:
         #Preleva le credenziali dell'utente
         self.username = input("Username: ")
         self.password = getpass.getpass("Password: ")
-        return self.username, password
+        return self.username, self.password
 
     def authenticate(self, username, password):
         #controlla se le credenziali sono corrette

@@ -1,5 +1,6 @@
 from packages import Packages
 from services import Services
+from logger import Login
 
 class Main:
 
@@ -7,6 +8,13 @@ class Main:
     service: Services
 
     def main(self):
+
+        #performa il log-in
+        log = Login()
+        log.adminlogin()
+
+        if not log.admin:
+            exit()
 
         #inizializza moduli
         self.pack = Packages()
@@ -21,7 +29,7 @@ class Main:
             exit()
 
     def runconfig(self):
-        
+
         self.pack.configure()
         self.service.configure()
 

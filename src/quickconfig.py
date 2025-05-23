@@ -5,7 +5,7 @@ import shutil
 class QuickConfig():
 
     def importconfig(self, to_import):
-        shutil.unpack_archive(to_import,os.getcwd())
+        shutil.unpack_archive(to_import,os.getcwd(),"tar",)
 
     def exportconfig(self, exportpath):
         #esporta le configurazioni
@@ -23,4 +23,5 @@ q = QuickConfig()
 
 q.exportconfig("test")
 
-
+print("\n" + os.getcwd())
+q.importconfig(os.getcwd() + "/test/export.tar")

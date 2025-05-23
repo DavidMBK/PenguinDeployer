@@ -53,7 +53,7 @@ class Packages(Module):
         self.unistall_packages()
 
 
-
+'''
 if __name__ == "__main__":
     p = Packages()
     
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     
     #testing configuration (install/uninstall)
     p.configure()
-
+'''

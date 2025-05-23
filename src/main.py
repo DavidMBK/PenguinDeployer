@@ -1,21 +1,33 @@
-import packages
+from packages import Packages
+from services import Services
 
-def main():
+class Main:
 
-    #inizializza moduli
-    pack = packages.Packages()
+    pack: Packages
+    service: Services
 
-    while(1):
+    def main(self):
 
-        print("Inserisci il comando")
-        inp = input()
+        #inizializza moduli
+        self.pack = Packages()
+        self.service = Services()
 
-        match inp:
-            case "close":
-                break
-            case "packages":
-                pack.install_packages()
+        #codice temporaneo
+        print("Configura il sistema? Y/N")
+        ans = input()
+        if ans == "Y":
+            self.runconfig()
+        else:
+            exit()
+
+    def runconfig(self):
+        
+        self.pack.configure()
+        self.service.configure()
+
+        print("Configurazione completata")
 
 
 if __name__=="__main__":
-    main()
+    m = Main()
+    m.main()

@@ -1,23 +1,26 @@
 import os
 import shutil
 
+
 class QuickConfig():
 
-    def importconfig(self):
-        pass
+    def importconfig(self, to_import):
+        shutil.unpack_archive(to_import,os.getcwd())
 
-    def exportconfig(self,exportpath):
+    def exportconfig(self, exportpath):
         #esporta le configurazioni
 
         #crea un archivio tar
 
         here = os.getcwd()
-        shutil.make_archive("export","tar",here + "/configs")
+        shutil.make_archive("export", "tar", here + "/configs")
 
         #mettilo nella cartella desirata
-        shutil.move(here + "/export.tar",here + "/configs")
+        shutil.move(here + "/export.tar", exportpath)
 
 
 q = QuickConfig()
 
-q.exportconfig()
+q.exportconfig("test")
+
+

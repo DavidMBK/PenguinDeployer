@@ -40,6 +40,9 @@ class Services(Module):
         services = conf.read()
         ssplit = re.split(':|\n', services)
 
+        self.to_enable = []
+        self.to_disable = []
+
         i = 0
         while i < len(ssplit):
             if ssplit[i + 1] == "enable":

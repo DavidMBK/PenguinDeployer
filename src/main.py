@@ -2,6 +2,11 @@ from packages import Packages
 from services import Services
 from logger import Login
 
+# Parte GUI
+from tkinter import Tk
+from main_ui import MainUI
+
+
 class Main:
 
     pack: Packages
@@ -37,5 +42,11 @@ class Main:
 
 
 if __name__=="__main__":
-    m = Main()
-    m.main()
+    # m = Main()
+    # m.main()
+
+    # Questo è la configurazione con best practise dell'UI
+
+    root = Tk()
+    app = MainUI(root)
+    root.mainloop()

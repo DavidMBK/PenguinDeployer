@@ -1,115 +1,117 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import messagebox
 import webbrowser
 from logger import Login
 
-root = Tk()
-root.title('Login')
-root.geometry('925x500+300+200')
-root.configure(bg='#fff')
-root.resizable(False,False)
+class LoginFrame(tk.Frame): # Impostare tk.Frame per avere il tk.raise per cambiare schermata nel main.
+    
+    def __init__(self,parent, controller):
+        super().__init__(parent, bg='white')
+        self.controller = controller
+        self.login = Login()
+    
+        # Parte Immagine a sinistra
 
-# Funzione Login
-def try_login():
-    username = user.get()
-    password = passw.get()
+        self.img = tk.PhotoImage(file='src/imagines/login.png')
+        tk.Label(self,image=self.img,bg='white').place(x=50,y=50)
 
-    if username == "Username" or password == "Password":
-        messagebox.showerror("Error", "Please enter username and password.")
-        return
+        frame = tk.Frame(self, width=350, height=350, bg="white", bd=0, highlightthickness=0)
 
-    # Implementare cambio di frame etc...
-    success, msg = login.adminlogin(username,password)
-    if success: 
-          messagebox.showinfo("Success", msg)
-    else: 
-          messagebox.showerror("Error", msg)
+        frame.place(x=480, y=70)
 
-# Funzione prettamente grafica per rimuovere e aggiornare la barra. 
-def on_enter_user(e):
-        if user.get() == 'Username':
-            user.delete(0,'end')
+        heading=tk.Label(frame, text='Sign in', fg='#57a1f8', bg='white',font=('Microsoft YaHei UI Light',23,'normal'))
+        heading.place(x=100 , y=5)
 
-def on_leave_user(e):
-        name = user.get()
-        if name == '':
-            user.insert(0,'Username')
+        # Parte Username
 
-def on_enter_pass(e):
-        if passw.get() == 'Password':
-            passw.delete(0,'end')
+        self.user = tk.Entry(
+            frame,
+            width=25,
+            fg='black',
+            border=0,
+            bg='white',
+            font=('Microsoft YaHei UI Light', 11),
+            highlightthickness=0,
+            relief='flat'
+        )
+        self.user.place(x=30, y=80)
+        self.user.insert(0,'Username')
+        self.user.bind('<FocusIn>',self.on_enter_user)
+        self.user.bind('<FocusOut>',self.on_leave_user)
 
-def on_leave_pass(e):
-        name = passw.get()
-        if name == '':
-            passw.insert(0,'Password')
-            
-def GithubStar():
-    webbrowser.open_new("https://github.com/DavidMBK/PenguinDeployer")
+        tk.Frame(frame, width=295, height=1, bg='gray').place(x=25, y=107)
 
-# Parte Immagine a sinistra
+        # Parte Password
 
-img = PhotoImage(file='src/imagines/login.png')
-Label(root,image=img,bg='white').place(x=50,y=50)
+        self.passw = tk.Entry(
+            frame,
+            width=25,
+            fg='black',
+            border=0,
+            bg='white',
+            font=('Microsoft YaHei UI Light', 11),
+            highlightthickness=0,
+            relief='flat',
+            show=''
+        )
+        self.passw.place(x=30, y=150)
+        self.passw.insert(0,'Password')
+        self.passw.bind('<FocusIn>',self.on_enter_pass)
+        self.passw.bind('<FocusOut>',self.on_leave_pass)
 
-frame = Frame(root, width=350, height=350, bg="white", bd=0, highlightthickness=0)
+        tk.Frame(frame, width=295, height=1, bg='gray').place(x=25, y=177)
 
-frame.place(x=480, y=70)
+        # buttone 
 
-heading=Label(frame, text='Sign in', fg='#57a1f8', bg='white',font=('Microsoft YaHei UI Light',23,'normal'))
-heading.place(x=100 , y=5)
+        login = Login()
 
-# Parte Username
+        tk.Button(frame,width=32,pady=7,text='Sign in',bg='#57a1f8',fg='white',border=0, command=self.try_login).place(x=34,y=204)
 
-user = Entry(
-    frame,
-    width=25,
-    fg='black',
-    border=0,
-    bg='white',
-    font=('Microsoft YaHei UI Light', 11),
-    highlightthickness=0,
-    relief='flat'
-)
-user.place(x=30, y=80)
-user.insert(0,'Username')
-user.bind('<FocusIn>',on_enter_user)
-user.bind('<FocusOut>',on_leave_user)
+        # Star now
 
-Frame(frame, width=295, height=1, bg='gray').place(x=25, y=107)
+        label = tk.Label(frame, text="Love the project?",fg='black',bg='white',font=('Microsoft YaHei UI Light',9,'normal'))
+        label.place(x=75,y=270)
 
-# Parte Password
+        star_now = tk.Button(frame, width=6, text='Star now',border=0,bg='white',cursor='hand2',fg='#EAB308', highlightthickness=0,relief='flat', command=self.GithubStar)
+        star_now.place(x=172,y=263.5)
+    
+    # Funzione Login
+    def try_login(self):
+        username = self.user.get()
+        password = self.passw.get()
 
-passw = Entry(
-    frame,
-    width=25,
-    fg='black',
-    border=0,
-    bg='white',
-    font=('Microsoft YaHei UI Light', 11),
-    highlightthickness=0,
-    relief='flat'
-)
-passw.place(x=30, y=150)
-passw.insert(0,'Password')
-passw.bind('<FocusIn>',on_enter_pass)
-passw.bind('<FocusOut>',on_leave_pass)
+        if username == "Username" or password == "Password":
+            messagebox.showerror("Error", "Please enter username and password.")
+            return
 
-Frame(frame, width=295, height=1, bg='gray').place(x=25, y=177)
+        # Implementare cambio di frame etc...
+        success, msg = self.login.adminlogin(username,password)
+        if success: 
+            messagebox.showinfo("Success", msg)
+            self.controller.show_frame("Mainwindow")
+        else: 
+            messagebox.showerror("Error", msg)
 
-# buttone 
+    # Funzione prettamente grafica per rimuovere e aggiornare la barra. 
+    def on_enter_user(self, e):
+            if self.user.get() == 'Username':
+                self.user.delete(0,'end')
 
-login = Login()
+    def on_leave_user(self, e):
+            if self.user.get() == '':
+                self.user.insert(0,'Username')
 
-Button(frame,width=32,pady=7,text='Sign in',bg='#57a1f8',fg='white',border=0, command=try_login).place(x=34,y=204)
+    def on_enter_pass(self, e):
+            if self.passw.get() == 'Password':
+                self.passw.delete(0,'end')
+                self.passw.config(show='*')
 
-# Star now
+    def on_leave_pass(self, e):
+            if self.passw.get() == '':
+                self.passw.insert(0,'Password')
+                self.passw.config(show='')
+                
+    def GithubStar(self):
+        webbrowser.open_new("https://github.com/DavidMBK/PenguinDeployer")
 
-label = Label(frame, text="Love the project?",fg='black',bg='white',font=('Microsoft YaHei UI Light',9,'normal'))
-label.place(x=75,y=270)
-
-star_now = Button(frame, width=6, text='Star now',border=0,bg='white',cursor='hand2',fg='#EAB308', highlightthickness=0,relief='flat', command=GithubStar)
-star_now.place(x=172,y=263.5)
-
-root.mainloop()
 

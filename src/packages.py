@@ -59,7 +59,7 @@ class Packages(Module):
 
 '''
 if __name__ == "__main__":
-    p = Packages()
+    p = Packages(src/configs/packages)
     
     #testing import
     p.conf_import("testconfig.config")

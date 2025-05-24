@@ -17,8 +17,8 @@ class Main:
             exit()
 
         #inizializza moduli
-        self.pack = Packages()
-        self.service = Services()
+        self.pack = Packages("src/configs/packages")
+        self.service = Services("src/configs/services")
 
         #codice temporaneo
         print("Configura il sistema? Y/N")

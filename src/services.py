@@ -64,7 +64,7 @@ class Services(Module):
 
 """
 if __name__ == "__main__":
-    s = Services()
+    s = Services(src/configs/services)
 
     #testing import
     s.conf_import("testconfig.config")

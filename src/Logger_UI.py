@@ -79,7 +79,6 @@ class LoginFrame(tk.Frame): # Impostare tk.Frame per avere il tk.raise per cambi
     def try_login(self):
         username = self.user.get()
         password = self.passw.get()
-
         if username == "Username" or password == "Password":
             messagebox.showerror("Error", "Please enter username and password.")
             return

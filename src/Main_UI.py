@@ -1,6 +1,6 @@
 import tkinter as tk
 from Logger_UI import LoginFrame
-from Mainwindow import Mainwindow
+from Mainwindow_UI import Mainwindow
 
 class MainUI:
     def __init__(self, root):

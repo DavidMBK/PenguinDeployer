@@ -4,7 +4,7 @@ from logger import Login
 
 # Parte GUI
 from tkinter import Tk
-from main_ui import MainUI
+from Main_UI import MainUI
 
 
 class Main:

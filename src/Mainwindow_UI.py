@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class Mainwindow(tk.Frame):
 
@@ -39,11 +40,19 @@ class Mainwindow(tk.Frame):
         self.modulebutton5.pack(pady=3)
 
         #bottone per applicare le configurazioni
-        self.apply = tk.Button(self.sidebar,text="Apply Configurations",command=self.SubmitForm,width="30",height="3")
+        self.apply = tk.Button(self.sidebar,text="Apply Configurations",command=self.Applychanges,width="30",height="3")
         self.apply.pack(side=tk.BOTTOM)
 
 
     def SubmitForm(self):
         #test per i bottoni, da rimuovere
         print("button pressed")
+
+    # Semplice modal, non c'è bisogno di creare un frame a parte per questo.
+    def Applychanges(self):
+        response = messagebox.askquestion("Confirm Changes", "Do you want to apply the changes?")
+        if response == "yes":
+            print("Success")
+        elif response == "no":
+            print("Error")
 

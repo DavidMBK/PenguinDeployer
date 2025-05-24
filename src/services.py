@@ -26,7 +26,7 @@ class Services(Module):
 
     def conf_export(self, filename):
 
-        confexp = open(filename, 'w')
+        confexp = open(self.configfolder + "/" + filename, 'w')
 
         for pack in self.to_enable:
             confexp.write("\n" + pack + ":" + "enable")
@@ -36,7 +36,7 @@ class Services(Module):
 
     def conf_import(self, filename):
 
-        conf = open(filename)
+        conf = open(self.configfolder + "/" + filename)
         services = conf.read()
         ssplit = re.split(':|\n', services)
 
@@ -67,10 +67,10 @@ if __name__ == "__main__":
     s = Services()
 
     #testing import
-    s.conf_import("src/configs/services/testconfig.config")
+    s.conf_import("testconfig.config")
 
     #testing export
-    s.conf_export("src/configs/services/testconfigexp.config")
+    s.conf_export("testconfigexp.config")
 
     #testing configuration (install/uninstall)
     s.configure()

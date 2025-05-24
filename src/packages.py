@@ -4,6 +4,7 @@ from module import Module
 
 
 class Packages(Module):
+
     to_install: list[str] = []
     to_uninstall: list[str] = []
 
@@ -23,7 +24,7 @@ class Packages(Module):
 
     def conf_export(self, filename):
 
-        confexp = open(filename, 'w')
+        confexp = open(self.configfolder + "/" + filename, 'w')
 
         for pack in self.to_install:
             confexp.write("\n" + pack + ":" + "install")
@@ -33,7 +34,7 @@ class Packages(Module):
 
     def conf_import(self, filename):
 
-        conf = open(filename)
+        conf = open(self.configfolder + "/" + filename)
         packages = conf.read()
         psplit = re.split(':|\n', packages)
 
@@ -61,10 +62,10 @@ if __name__ == "__main__":
     p = Packages()
     
     #testing import
-    p.conf_import("src/configs/packages/testconfig.config")
+    p.conf_import("testconfig.config")
     
     #testing export
-    p.conf_export("src/configs/packages/testconfigexp.config")
+    p.conf_export("testconfigexp.config")
     
     #testing configuration (install/uninstall)
     p.configure()

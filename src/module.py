@@ -2,6 +2,11 @@
 #classe base per i moduli, fatta per essere inheritata e non instanziata di per se.
 class Module:
 
+    configfolder: str
+
+    def __init__(self, nconfigfolder):
+        self.configfolder = nconfigfolder
+
     def sys_read(self):
         #funzione per leggere le impostazioni attuali del sistema
         pass

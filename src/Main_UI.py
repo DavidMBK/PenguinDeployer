@@ -19,7 +19,8 @@ class MainUI:
 
 
         #self.show_frame("LoginFrame")
-        self.show_frame("PackagesUI")
+        self.show_frame("Mainwindow")
+        #self.show_frame("PackagesUI")
 
     # metodo per passaggio frame    
     def show_frame(self, name):

@@ -20,20 +20,20 @@ class Environment(Module):
 
     def set_env_configs(self):
 
-        runs = ["./scripts/change_shell.sh"] + [self.shell]
+        runs = ["./src/scripts/change_shell.sh"] + [self.shell]
         subprocess.call(runs)
 
-        rune = ["./scripts/change_editor.sh"] + [self.editor]
+        rune = ["./src/scripts/change_editor.sh"] + [self.editor]
         subprocess.call(rune)
 
-        runp = ["./scripts/change_prompt.sh"] + [self.prompt]
+        runp = ["./src/scripts/change_prompt.sh"] + [self.prompt]
         subprocess.call(runp)
 
-        runh = ["./scripts/change_hostname.sh"] + [self.hostname]
+        runh = ["./src/scripts/change_hostname.sh"] + [self.hostname]
         subprocess.call(runh)
 
         if self.gconfigs:
-            grun = ["./scripts/expimp_gconfigs.sh"] + ["imp"] + [self.gconfigs_filename]
+            grun = ["./src/scripts/expimp_gconfigs.sh"] + ["imp"] + [self.gconfigs_filename]
             subprocess.call(grun)
 
     def conf_export(self, filename):
@@ -73,7 +73,7 @@ class Environment(Module):
 
 
 if __name__ == "__main__":
-    e = Environment("configs/environment")
+    e = Environment("src/configs/environment")
 
     #testing import
     e.conf_import("testconfig.config")
@@ -82,4 +82,4 @@ if __name__ == "__main__":
     e.conf_export("testconfigexp.config")
 
     #testing configuration
-    #e.configure()
+    e.configure()

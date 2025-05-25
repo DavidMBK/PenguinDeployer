@@ -1,3 +1,3 @@
 #!/bin/bash
 
-chsh $1
+chsh -s "$1" "$USER"

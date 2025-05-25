@@ -1,6 +1,7 @@
 import tkinter as tk
 from Logger_UI import LoginFrame
 from Mainwindow_UI import Mainwindow
+from Package_installer_UI import PackagesUI
 
 class MainUI:
     def __init__(self, root):
@@ -10,15 +11,15 @@ class MainUI:
 
         self.frames = {}  # Creo un dizionario vuoto che conterrà i vari "frame" (pagine)
 
-        for FrameClass in (LoginFrame, Mainwindow):
+        for FrameClass in (LoginFrame, Mainwindow, PackagesUI):
             page = FrameClass(self.root, self)  # Istanzio un frame, passando root e controller (self)
             self.frames[FrameClass.__name__] = page  # Lo salvo nel dizionario con chiave il nome della classe
             page.place(relwidth=1, relheight=1)  # Posiziono il frame dentro root, occupa tutta la finestra
 
 
         #self.show_frame("LoginFrame")
-        self.show_frame("Mainwindow")
-        
+        self.show_frame("PackagesUI")
+
     # metodo per passaggio frame    
     def show_frame(self, name):
         frame = self.frames[name]
@@ -37,6 +38,9 @@ class MainUI:
             self.center_window(925,500)
             self.root.resizable(False, False)
         elif name == "Mainwindow":
+            self.center_window(1200,800)
+            self.root.resizable(True, True)
+        elif name == "PackagesUI":
             self.center_window(1200,800)
             self.root.resizable(True, True)
 

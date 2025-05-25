@@ -1,4 +1,4 @@
-from packages import Packages
+from packages import PackagesLogic
 from services import Services
 from logger import Login
 
@@ -9,7 +9,7 @@ from Main_UI import MainUI
 
 class Main:
 
-    pack: Packages
+    pack: PackagesLogic
     service: Services
 
     def main(self):
@@ -22,7 +22,7 @@ class Main:
             exit()
 
         #inizializza moduli
-        self.pack = Packages("src/configs/packages")
+        self.pack = PackagesLogic("src/configs/packages")
         self.service = Services("src/configs/services")
 
         #codice temporaneo

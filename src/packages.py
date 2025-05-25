@@ -3,10 +3,10 @@ import subprocess
 from module import Module
 
 
-class Packages(Module):
-
-    to_install: list[str] = []
-    to_uninstall: list[str] = []
+class PackagesLogic(Module):
+    def __init__(self):
+        self.to_install: list[str] = []
+        self.to_uninstall: list[str] = []
 
     def install_packages(self):
         #esegui lo script per installare i pacchetti

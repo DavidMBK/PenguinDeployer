@@ -150,14 +150,10 @@ class PackagesUI(tk.Frame):
             return
 
         try:
-            result = subprocess.run(
-                ["apt-cache", "search", "--names-only", query],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                check=True
-            )
+            comand = ["./src/scripts/search_pack.sh"] + [query]
+            result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
             matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
+
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Errore", f"Errore nella ricerca: {e.stderr}")
             return

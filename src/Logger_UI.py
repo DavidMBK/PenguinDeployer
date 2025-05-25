@@ -5,7 +5,7 @@ from logger import Login
 
 class LoginFrame(tk.Frame): # Impostare tk.Frame per avere il tk.raise per cambiare schermata nel main.
     
-    def __init__(self,parent, controller):
+    def __init__(self,parent, controller, nconfigfolder):
         super().__init__(parent, bg='white')
         self.controller = controller
         self.login = Login()

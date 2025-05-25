@@ -1,4 +1,5 @@
-from packages import Packages
+from tkinter import Tk
+from packages import PackagesLogic
 from services import Services
 from logger import Login
 
@@ -9,7 +10,7 @@ from Main_UI import MainUI
 
 class Main:
 
-    pack: Packages
+    pack: PackagesLogic
     service: Services
 
     def main(self):
@@ -21,7 +22,7 @@ class Main:
         app = MainUI(root)
 
         #inizializza moduli
-        self.pack = Packages("src/configs/packages")
+        self.pack = PackagesLogic("src/configs/packages")
         self.service = Services("src/configs/services")
 
         root.mainloop()
@@ -35,5 +36,12 @@ class Main:
 
 
 if __name__=="__main__":
-    m = Main()
-    m.main()
+    # m = Main()
+    # m.main()
+
+    # Questo è la configurazione con best practise dell'UI
+    nconfigfolder = "src/configs/packages"
+
+    root = Tk()
+    app = MainUI(root, nconfigfolder)
+    root.mainloop()

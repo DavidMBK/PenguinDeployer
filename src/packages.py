@@ -3,10 +3,13 @@ import subprocess
 from module import Module
 
 
-class Packages(Module):
+class PackagesLogic(Module):
+    def __init__(self,nconfigfolder):
+        super().__init__(nconfigfolder)
+        self.configfolder = nconfigfolder
 
-    to_install: list[str] = []
-    to_uninstall: list[str] = []
+        self.to_install: list[str] = []
+        self.to_uninstall: list[str] = []
 
     def install_packages(self):
         #esegui lo script per installare i pacchetti
@@ -55,6 +58,10 @@ class Packages(Module):
 
         self.install_packages()
         self.unistall_packages()
+    
+    def prova(self):
+        print(f'installati: {self.to_install}')
+        print(f'Disinstallati: {self.to_uninstall}')
 
 
 '''

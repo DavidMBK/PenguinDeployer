@@ -11,8 +11,8 @@ class PackagesUI(tk.Frame):
         self.pack(fill=tk.BOTH, expand=True)
 
         self.package_states = {}
-
-        self.manager = PackagesLogic()
+        self.manager = PackagesLogic("src/configs/packages")
+        self.selected_package = None  # Pacchetto selezionato
 
         # Top frame
         top_frame = tk.LabelFrame(self, padx=10, pady=10)
@@ -40,14 +40,19 @@ class PackagesUI(tk.Frame):
         self.scrollable_frame.bind("<Enter>", self._bind_to_mousewheel)
         self.scrollable_frame.bind("<Leave>", self._unbind_from_mousewheel)
 
-        #self.populate_packages()
-
         # Bottom controls
         self.search_entry = tk.Entry(bottom_frame)
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
         for label in ["Aggiungi", "Rimuovi", "Import", "Export"]:
-            cmd = self.open_package_popup if label == "Aggiungi" else self.placeholder_action
+            if label == "Aggiungi":
+                cmd = self.open_package_popup
+            elif label == "Rimuovi":
+                cmd = self.remove_selected_package
+            elif label == "Import":
+                cmd = self.Import
+            elif label == "Export":
+                cmd = self.Export
             tk.Button(bottom_frame, text=label, command=cmd).pack(side=tk.LEFT, padx=2)
 
     def placeholder_action(self):
@@ -84,13 +89,22 @@ class PackagesUI(tk.Frame):
             self.add_package_row(pkg_name)
 
     def add_package_row(self, pkg_name):
-        row = tk.Frame(self.scrollable_frame)
+        row = tk.Frame(self.scrollable_frame, name=pkg_name)
         row.pack(fill=tk.X, expand=True)
         row.grid_columnconfigure(0, weight=1)
         row.grid_columnconfigure(1, weight=0)
 
+        def on_select(event, name=pkg_name):
+            self.selected_package = name
+            # Evidenzia la riga selezionata
+            for widget in self.scrollable_frame.winfo_children():
+                widget.config(bg="#d9d9d9")
+            row.config(bg="#bdbdbd")  # colore evidenziato
+
         name_label = tk.Label(row, text=pkg_name, anchor="w")
         name_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
+        name_label.bind("<Button-1>", on_select)
+        row.bind("<Button-1>", on_select)
 
         toggle_btn = tk.Button(
             row,
@@ -111,25 +125,24 @@ class PackagesUI(tk.Frame):
             # Aggiunto alla lista to_install
             if pkg_name not in self.manager.to_install:
                 self.manager.to_install.append(pkg_name)
-            # Rimosso dalla lista to_uninstall, se c'era
+            # Rimosso dalla lista to_uninstall, se presente
             if pkg_name in self.manager.to_uninstall:
                 self.manager.to_uninstall.remove(pkg_name)
         else:
             # Aggiunto alla lista to_uninstall
             if pkg_name not in self.manager.to_uninstall:
                 self.manager.to_uninstall.append(pkg_name)
-            # Rimosso dalla lista to_install, se c'era
+            # Rimosso dalla lista to_install, se presente
             if pkg_name in self.manager.to_install:
                 self.manager.to_install.remove(pkg_name)
 
         # DEBUG:
         self.manager.prova()
 
-    # Utilizzato per avere lo stato alla prima botta.
     def _get_button_text(self, pkg_name):
-        return "Uninstall" if not self.package_states[pkg_name] else "Install"
+        # Se False (non installato), testo bottone è "Install"
+        return "Install" if self.package_states.get(pkg_name, False) else "Uninstall"
 
-    # Popup entrante
     def open_package_popup(self):
         query = self.search_entry.get().strip()
         if not query:
@@ -175,11 +188,36 @@ class PackagesUI(tk.Frame):
                 self.package_states[pkg_name] = True
                 self.add_package_row(pkg_name)
                 self.manager.to_install.append(pkg_name)
-                #print(self.manager.to_install) #DEBUG
             else:
                 messagebox.showinfo("Esiste già", f"{pkg_name} è già presente.")
 
             popup.destroy()
 
         tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
-        
+
+    def remove_selected_package(self):
+        pkg = self.selected_package
+        if not pkg or pkg not in self.package_states:
+            messagebox.showwarning("Nessuna selezione", "Seleziona prima un pacchetto.")
+            return
+
+        # Rimuovi widget dalla UI
+        for widget in self.scrollable_frame.winfo_children():
+            if widget.winfo_name() == pkg:
+                widget.destroy()
+                break
+
+        # Rimuovi dagli stati e dalle liste manager
+        del self.package_states[pkg]
+        self.manager.to_install = [p for p in self.manager.to_install if p != pkg]
+        self.manager.to_uninstall = [p for p in self.manager.to_uninstall if p != pkg]
+
+        self.selected_package = None
+    
+    def Export(self):
+        self.manager.conf_export("testconfigexp.config")
+    
+    def Import(self):
+        self.manager.conf_import("testconfig.config")
+        #self.add_package_row(self.manager.to_install)
+        #self.add_package_row(self.manager.to_uninstall)

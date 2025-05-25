@@ -20,20 +20,20 @@ class Environment(Module):
 
     def set_env_configs(self):
 
-        runs = ["./src/scripts/change_shell.sh"] + [self.shell]
+        runs = ["./scripts/change_shell.sh"] + [self.shell]
         subprocess.call(runs)
 
-        rune = ["./src/scripts/change_editor.sh"] + [self.editor]
+        rune = ["./scripts/change_editor.sh"] + [self.editor]
         subprocess.call(rune)
 
-        runp = ["./src/scripts/change_prompt.sh"] + [self.prompt]
+        runp = ["./scripts/change_prompt.sh"] + [self.prompt]
         subprocess.call(runp)
 
-        runh = ["./src/scripts/change_hostname.sh"] + [self.hostname]
+        runh = ["./scripts/change_hostname.sh"] + [self.hostname]
         subprocess.call(runh)
 
         if self.gconfigs:
-            grun = ["./src/scripts/expimp_gconfigs.sh"] + ["imp"] + [self.gconfigs_filename]
+            grun = ["./scripts/expimp_gconfigs.sh"] + ["imp"] + [self.gconfigs_filename]
             subprocess.call(grun)
 
     def conf_export(self, filename):
@@ -41,11 +41,11 @@ class Environment(Module):
         confexp = open(self.configfolder + "/" + filename, 'w')
 
         confexp.write("shell:" + self.shell)
-        confexp.write("\n editor:" + self.editor)
-        confexp.write("\n prompt:" + self.prompt)
-        confexp.write("\n hostname:" + self.hostname)
-        confexp.write("\n gconfigs:" + str(self.gconfigs))
-        confexp.write("\n gconfigs_filename:" + filename)
+        confexp.write("\neditor:" + self.editor)
+        confexp.write("\nhostname:" + self.hostname)
+        confexp.write("\ngconfigs:" + str(self.gconfigs))
+        confexp.write("\ngconfigs_filename:" + filename)
+        confexp.write("\n" + self.prompt)
 
         if self.gconfigs:
             run = ["./src/scripts/expimp_gconfigs.sh"] + ["exp"] + [filename]
@@ -54,22 +54,26 @@ class Environment(Module):
     def conf_import(self, filename):
 
         conf = open(self.configfolder + "/" + filename)
-        envs = conf.read()
-        esplit = re.split(':|\n', envs)
 
-        self.shell = esplit[1]
-        self.editor = esplit[3]
-        self.prompt = esplit[5]
-        self.hostname = esplit[7]
-        self.gconfigs = bool(esplit[9])
-        self.gconfigs_filename = esplit[11]
+        self.shell = conf.readline().strip("\n").split(":")[1]
+        print(self.shell)
+        self.editor = conf.readline().strip("\n").split(":")[1]
+        print(self.editor)
+        self.hostname = conf.readline().strip("\n").split(":")[1]
+        print(self.hostname)
+        self.gconfigs = "True" if (conf.readline().strip("\n").split(":")[1] == "True") else "False"
+        print(self.gconfigs)
+        self.gconfigs_filename = conf.readline().strip("\n").split(":")[1]
+        print(self.gconfigs_filename)
+        self.prompt = conf.readline().strip("\n")
+        print(self.prompt)
 
     def configure(self):
         self.set_env_configs()
 
 
 if __name__ == "__main__":
-    e = Environment("src/configs/environment")
+    e = Environment("configs/environment")
 
     #testing import
     e.conf_import("testconfig.config")

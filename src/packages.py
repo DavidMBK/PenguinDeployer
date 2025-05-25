@@ -55,6 +55,10 @@ class PackagesLogic(Module):
 
         self.install_packages()
         self.unistall_packages()
+    
+    def prova(self):
+        print(f'installati: {self.to_install}')
+        print(f'Disinstallati: {self.to_uninstall}')
 
 
 '''

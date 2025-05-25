@@ -40,7 +40,7 @@ class PackagesUI(tk.Frame):
         self.scrollable_frame.bind("<Enter>", self._bind_to_mousewheel)
         self.scrollable_frame.bind("<Leave>", self._unbind_from_mousewheel)
 
-        self.populate_packages()
+        #self.populate_packages()
 
         # Bottom controls
         self.search_entry = tk.Entry(bottom_frame)
@@ -102,14 +102,34 @@ class PackagesUI(tk.Frame):
 
     def toggle_install(self, pkg_name, button):
         self.package_states[pkg_name] = not self.package_states[pkg_name]
+        new_state = self.package_states[pkg_name]
+
         button.config(text=self._get_button_text(pkg_name))
-        action = "install" if self.package_states[pkg_name] else "uninstall"
-        print(f"{pkg_name}: {action}")
+        action = "install" if new_state else "uninstall"
 
+        if new_state:
+            # Aggiunto alla lista to_install
+            if pkg_name not in self.manager.to_install:
+                self.manager.to_install.append(pkg_name)
+            # Rimosso dalla lista to_uninstall, se c'era
+            if pkg_name in self.manager.to_uninstall:
+                self.manager.to_uninstall.remove(pkg_name)
+        else:
+            # Aggiunto alla lista to_uninstall
+            if pkg_name not in self.manager.to_uninstall:
+                self.manager.to_uninstall.append(pkg_name)
+            # Rimosso dalla lista to_install, se c'era
+            if pkg_name in self.manager.to_install:
+                self.manager.to_install.remove(pkg_name)
+
+        # DEBUG:
+        self.manager.prova()
+
+    # Utilizzato per avere lo stato alla prima botta.
     def _get_button_text(self, pkg_name):
-        # Nota: mostra "Install" se è False (non installato), quindi il testo è l'azione da fare
-        return "Install" if not self.package_states[pkg_name] else "Uninstall"
+        return "Uninstall" if not self.package_states[pkg_name] else "Install"
 
+    # Popup entrante
     def open_package_popup(self):
         query = self.search_entry.get().strip()
         if not query:
@@ -154,9 +174,12 @@ class PackagesUI(tk.Frame):
             if pkg_name not in self.package_states:
                 self.package_states[pkg_name] = True
                 self.add_package_row(pkg_name)
+                self.manager.to_install.append(pkg_name)
+                #print(self.manager.to_install) #DEBUG
             else:
                 messagebox.showinfo("Esiste già", f"{pkg_name} è già presente.")
 
             popup.destroy()
 
         tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
+        

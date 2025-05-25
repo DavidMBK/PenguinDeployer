@@ -219,5 +219,14 @@ class PackagesUI(tk.Frame):
     
     def Import(self):
         self.manager.conf_import("testconfig.config")
-        #self.add_package_row(self.manager.to_install)
-        #self.add_package_row(self.manager.to_uninstall)
+
+        # Unisci i pacchetti da installare e disinstallare
+        all_packages = set(self.manager.to_install + self.manager.to_uninstall)
+
+        for pkg in all_packages:
+            if pkg not in self.package_states:
+                # Aggiungi alla UI e imposta lo stato
+                is_installed = pkg in self.manager.to_install
+                self.package_states[pkg] = is_installed
+                self.add_package_row(pkg)
+

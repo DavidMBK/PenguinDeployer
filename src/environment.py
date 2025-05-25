@@ -37,6 +37,7 @@ class Environment(Module):
             subprocess.call(grun)
 
     def conf_export(self, filename):
+
         confexp = open(self.configfolder + "/" + filename, 'w')
 
         confexp.write("shell:" + self.shell)
@@ -67,23 +68,14 @@ class Environment(Module):
         self.set_env_configs()
 
 
-#shells cat /etc/shells to find them, then pick one and use chsh
-#same thing for editor
-#prompt takes as input a string.
-#hostname takes as input a string aswell
-#export gnome configs
-
-
-
 if __name__ == "__main__":
-    e = Environment()
+    e = Environment("src/configs/environment")
 
     #testing import
-    e.conf_import("src/configs/services/testconfig.config")
+    e.conf_import("testconfig.config")
 
     #testing export
-    e.conf_export("src/configs/services/testconfigexp.config")
+    e.conf_export("testconfigexp.config")
 
     #testing configuration
     #e.configure()
-

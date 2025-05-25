@@ -4,6 +4,7 @@ from Mainwindow_UI import Mainwindow
 
 class MainUI:
     def __init__(self, root):
+
         # Costruzione basica del frame, [Devo farla dinamica?]
         self.root = root
         self.root.title("PenguinDeployer")
@@ -39,5 +40,4 @@ class MainUI:
         elif name == "Mainwindow":
             self.center_window(1200,800)
             self.root.resizable(True, True)
-
 

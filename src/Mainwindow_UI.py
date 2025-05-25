@@ -7,12 +7,6 @@ class Mainwindow(tk.Frame):
         super().__init__(parent)
         self.controller = controller
 
-        #probabilmente questo va' messo nel main e passato alle classi della GUI
-        '''     
-        self.tkroot = tk.Tk()
-        self.tkroot.title = "PenguinDeploy"
-        self.tkroot.geometry("800x500")
-        '''
         #rimuovi i border dai frame dopo
 
         #sidebar

@@ -14,24 +14,15 @@ class Main:
 
     def main(self):
 
-        #performa il log-in
-        log = Login()
-        log.adminlogin()
-
-        if not log.admin:
-            exit()
+        #inizializza l'UI
+        root = Tk()
+        app = MainUI(root)
 
         #inizializza moduli
         self.pack = Packages("src/configs/packages")
         self.service = Services("src/configs/services")
 
-        #codice temporaneo
-        print("Configura il sistema? Y/N")
-        ans = input()
-        if ans == "Y":
-            self.runconfig()
-        else:
-            exit()
+        root.mainloop()
 
     def runconfig(self):
 
@@ -42,11 +33,5 @@ class Main:
 
 
 if __name__=="__main__":
-    # m = Main()
-    # m.main()
-
-    # Questo è la configurazione con best practise dell'UI
-
-    root = Tk()
-    app = MainUI(root)
-    root.mainloop()
+    m = Main()
+    m.main()

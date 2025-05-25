@@ -4,15 +4,16 @@ from Mainwindow_UI import Mainwindow
 from Package_installer_UI import PackagesUI
 
 class MainUI:
-    def __init__(self, root):
+    def __init__(self, root, nconfigfolder):
         # Costruzione basica del frame, [Devo farla dinamica?]
         self.root = root
+        self.nconfigfolder = nconfigfolder
         self.root.title("PenguinDeployer")
 
         self.frames = {}  # Creo un dizionario vuoto che conterrà i vari "frame" (pagine)
 
         for FrameClass in (LoginFrame, Mainwindow, PackagesUI):
-            page = FrameClass(self.root, self)  # Istanzio un frame, passando root e controller (self)
+            page = FrameClass(self.root, self, self.nconfigfolder)  # Istanzio un frame, passando root e controller (self)
             self.frames[FrameClass.__name__] = page  # Lo salvo nel dizionario con chiave il nome della classe
             page.place(relwidth=1, relheight=1)  # Posiziono il frame dentro root, occupa tutta la finestra
 

@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 class Mainwindow(tk.Frame):
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, nconfigfolder):
         super().__init__(parent)
         self.controller = controller
 

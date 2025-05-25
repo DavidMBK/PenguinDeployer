@@ -46,7 +46,8 @@ if __name__=="__main__":
     # m.main()
 
     # Questo è la configurazione con best practise dell'UI
+    nconfigfolder = "src/configs/packages"
 
     root = Tk()
-    app = MainUI(root)
+    app = MainUI(root, nconfigfolder)
     root.mainloop()

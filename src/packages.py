@@ -4,8 +4,10 @@ from module import Module
 
 
 class PackagesLogic(Module):
-    def __init__(self, configfolder):
-        self.configfolder = configfolder
+    def __init__(self,nconfigfolder):
+        super().__init__(nconfigfolder)
+        self.configfolder = nconfigfolder
+
         self.to_install: list[str] = []
         self.to_uninstall: list[str] = []
 

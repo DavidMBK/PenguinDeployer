@@ -5,13 +5,13 @@ import subprocess
 from packages import PackagesLogic  # importa la classe logica
 
 class PackagesUI(tk.Frame):
-    def __init__(self, parent, controller=None):
+    def __init__(self, parent, controller,  nconfigfolder):
         super().__init__(parent)
         self.controller = controller
         self.pack(fill=tk.BOTH, expand=True)
 
         self.package_states = {}
-        self.manager = PackagesLogic("src/configs/packages")
+        self.manager = PackagesLogic(nconfigfolder)
         self.selected_package = None  # Pacchetto selezionato
 
         # Top frame

@@ -82,11 +82,7 @@ class PackagesUI(tk.Frame):
         self.canvas.unbind_all("<Button-4>")
         self.canvas.unbind_all("<Button-5>")
 
-    def populate_packages(self):
-        for i in range(30):
-            pkg_name = f"Pacchetto_{i}"
-            self.package_states[pkg_name] = False
-            self.add_package_row(pkg_name)
+
 
     def add_package_row(self, pkg_name):
         row = tk.Frame(self.scrollable_frame, name=pkg_name)
@@ -214,15 +210,21 @@ class PackagesUI(tk.Frame):
         self.manager.conf_export("testconfigexp.config")
     
     def Import(self):
+        # Pulisci lo stato attuale
+        for widget in self.scrollable_frame.winfo_children():
+            widget.destroy()
+        self.package_states.clear()
+        self.manager.to_install.clear()
+        self.manager.to_uninstall.clear()
+        self.selected_package = None
+
+        # Importa la configurazione
         self.manager.conf_import("testconfig.config")
 
         # Unisci i pacchetti da installare e disinstallare
         all_packages = set(self.manager.to_install + self.manager.to_uninstall)
 
         for pkg in all_packages:
-            if pkg not in self.package_states:
-                # Aggiungi alla UI e imposta lo stato
-                is_installed = pkg in self.manager.to_install
-                self.package_states[pkg] = is_installed
-                self.add_package_row(pkg)
-
+            is_installed = pkg in self.manager.to_install
+            self.package_states[pkg] = is_installed
+            self.add_package_row(pkg)

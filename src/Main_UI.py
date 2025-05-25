@@ -4,7 +4,9 @@ from Mainwindow_UI import Mainwindow
 from Package_installer_UI import PackagesUI
 
 class MainUI:
+
     def __init__(self, root, nconfigfolder):
+
         # Costruzione basica del frame, [Devo farla dinamica?]
         self.root = root
         self.nconfigfolder = nconfigfolder
@@ -45,5 +47,4 @@ class MainUI:
         elif name == "PackagesUI":
             self.center_window(1200,800)
             self.root.resizable(True, True)
-
 

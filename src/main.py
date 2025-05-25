@@ -1,9 +1,10 @@
+from tkinter import Tk
 from packages import PackagesLogic
 from services import Services
 from logger import Login
 
 # Parte GUI
-from tkinter import Tk
+from ttkthemes import ThemedTk
 from Main_UI import MainUI
 
 
@@ -14,24 +15,17 @@ class Main:
 
     def main(self):
 
-        #performa il log-in
-        log = Login()
-        log.adminlogin()
-
-        if not log.admin:
-            exit()
+        #inizializza l'UI
+        root = ThemedTk()
+        #style = ttk.Style(root)
+        #style.theme_use("equilux")
+        app = MainUI(root)
 
         #inizializza moduli
         self.pack = PackagesLogic("src/configs/packages")
         self.service = Services("src/configs/services")
 
-        #codice temporaneo
-        print("Configura il sistema? Y/N")
-        ans = input()
-        if ans == "Y":
-            self.runconfig()
-        else:
-            exit()
+        root.mainloop()
 
     def runconfig(self):
 

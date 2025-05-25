@@ -12,7 +12,6 @@ class Mainwindow(tk.Frame):
         self.controller = controller
         self.nconfigfolder = nconfigfolder
 
-        # Sidebar a sinistra
         self.sidebar = tk.Frame(self, pady=4, padx=4)
         self.sidebar.pack(fill=tk.BOTH, side=tk.LEFT)
 

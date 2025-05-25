@@ -12,8 +12,8 @@ class LoginFrame(tk.Frame): # Impostare tk.Frame per avere il tk.raise per cambi
     
         # Parte Immagine a sinistra
 
-        self.img = tk.PhotoImage(file='src/imagines/login.png')
-        tk.Label(self,image=self.img,bg='white').place(x=50,y=50)
+        #self.img = tk.PhotoImage(file='src/images/login.png')
+        #tk.Label(self,image=self.img,bg='white').place(x=50,y=50)
 
         frame = tk.Frame(self, width=350, height=350, bg="white", bd=0, highlightthickness=0)
 

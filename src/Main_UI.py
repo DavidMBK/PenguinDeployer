@@ -16,8 +16,9 @@ class MainUI:
             page.place(relwidth=1, relheight=1)  # Posiziono il frame dentro root, occupa tutta la finestra
 
 
-        self.show_frame("LoginFrame")
-
+        #self.show_frame("LoginFrame")
+        self.show_frame("Mainwindow")
+        
     # metodo per passaggio frame    
     def show_frame(self, name):
         frame = self.frames[name]

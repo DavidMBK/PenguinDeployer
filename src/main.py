@@ -3,7 +3,7 @@ from services import Services
 from logger import Login
 
 # Parte GUI
-from tkinter import Tk
+from ttkthemes import ThemedTk
 from Main_UI import MainUI
 
 
@@ -15,7 +15,9 @@ class Main:
     def main(self):
 
         #inizializza l'UI
-        root = Tk()
+        root = ThemedTk()
+        #style = ttk.Style(root)
+        #style.theme_use("equilux")
         app = MainUI(root)
 
         #inizializza moduli

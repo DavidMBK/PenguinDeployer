@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
-
+from tkinter import filedialog
 from Services import ServicesLogic  # importa la classe logica
 
 class ServicesUI(tk.Frame):
@@ -206,9 +206,25 @@ class ServicesUI(tk.Frame):
 
     
     def Export(self):
-        self.manager.conf_export("testconfigexp.config")
+        filepath = filedialog.asksaveasfilename(
+            title="Salva configurazione servizi",
+            defaultextension=".config",
+            filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
+        )
+        if not filepath:
+            return  # Utente ha annullato
+
+        self.manager.conf_export(filepath)
+        messagebox.showinfo("Esportazione completata", f"Configurazione esportata in:\n{filepath}")
     
     def Import(self):
+        filepath = filedialog.askopenfilename(
+            title="Apri configurazione servizi",
+            filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
+        )
+        if not filepath:
+            return  # Utente ha annullato
+
         # Pulisci lo stato attuale
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
@@ -218,7 +234,7 @@ class ServicesUI(tk.Frame):
         self.selected_service = None
 
         # Importa la configurazione
-        self.manager.conf_import("testconfig.config")
+        self.manager.conf_import(filepath)
 
         # Unisci i pacchetti da installare e disinstallare
         all_services = set(self.manager.to_enable + self.manager.to_disable)
@@ -227,3 +243,5 @@ class ServicesUI(tk.Frame):
             is_installed = pkg in self.manager.to_enable
             self.service_states[pkg] = is_installed
             self.add_service_row(pkg)
+
+        messagebox.showinfo("Importazione completata", f"Configurazione importata da:\n{filepath}")

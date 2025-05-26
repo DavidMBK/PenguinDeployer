@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from Module import Module
@@ -27,32 +28,42 @@ class PackagesLogic(Module):
         pass
 
     def conf_export(self, filename):
+        if not os.path.isabs(filename):
+            filename = os.path.join(self.configfolder, filename)
 
-        confexp = open(self.configfolder + "/" + filename, 'w')
-
-        for pack in self.to_install:
-            confexp.write("\n" + pack + ":" + "install")
-
-        for pack in self.to_uninstall:
-            confexp.write("\n" + pack + ":" + "uninstall")
+        with open(filename, 'w') as confexp:
+            for pack in self.to_install:
+                confexp.write("\n" + pack + ":" + "install")
+            for pack in self.to_uninstall:
+                confexp.write("\n" + pack + ":" + "uninstall")
 
     def conf_import(self, filename):
+        if not os.path.isabs(filename):
+            filename = os.path.join(self.configfolder, filename)
 
-        conf = open(self.configfolder + "/" + filename)
-        packages = conf.read()
-        psplit = re.split(':|\n', packages)
+        try:
+            with open(filename) as conf:
+                for line_num, line in enumerate(conf, start=1):
+                    line = line.strip()
+                    if not line:
+                        continue  # salta righe vuote
+                    if ':' not in line:
+                        print(f"Riga {line_num} ignorata: '{line}' non contiene ':'")
+                        continue
+                    name, action = map(str.strip, line.split(":", 1))
+                    if action == "install":
+                        if name not in self.to_install:
+                            self.to_install.append(name)
+                    elif action == "uninstall":
+                        if name not in self.to_uninstall:
+                            self.to_uninstall.append(name)
+                    else:
+                        print(f"Riga {line_num} errore: azione non valida '{action}'")
+        except FileNotFoundError:
+            print(f"File non trovato: {filename}")
+        except Exception as e:
+            print(f"Errore durante l'importazione: {e}")
 
-        i = 0
-        while i < len(psplit):
-            if psplit[i + 1] == "install":
-                if psplit[i + 1] not in self.to_install:
-                    self.to_install.append(psplit[i])
-            elif psplit[i + 1] == "uninstall":
-                if psplit[i + 1] not in self.to_uninstall:
-                    self.to_uninstall.append(psplit[i])
-            else:
-                print("Errore nel file di configurazione")
-            i += 2
 
     def conf_import_multiple(self, filenames):
 

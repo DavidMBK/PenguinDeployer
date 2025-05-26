@@ -17,7 +17,7 @@ class Main:
         self.pack = PackagesLogic("src/configs/packages")
         self.service = ServicesLogic("src/configs/services")
         self.environment = EnvironmentLogic("src/configs/environment")
-        self.quick = QuickConfig([self.pack,self.service])
+        self.quick = QuickConfig([self.pack, self.service, self.environment])
 
         #inizialliza l'UI principale
         self.mainUI = MainUI(self)

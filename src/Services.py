@@ -1,6 +1,7 @@
 import subprocess
 from Module import Module
 import re
+import os
 
 
 class ServicesLogic(Module):
@@ -30,30 +31,40 @@ class ServicesLogic(Module):
         return result.stdout
 
     def conf_export(self, filename):
+        if not os.path.isabs(filename):
+            filename = os.path.join(self.configfolder, filename)
 
-        confexp = open(self.configfolder + "/" + filename, 'w')
+        with open(filename, 'w') as confexp:
+            for pack in self.to_enable:
+                confexp.write("\n" + pack + ":" + "enable")
+            for pack in self.to_disable:
+                confexp.write("\n" + pack + ":" + "disable")
 
-        for pack in self.to_enable:
-            confexp.write("\n" + pack + ":" + "enable")
-
-        for pack in self.to_disable:
-            confexp.write("\n" + pack + ":" + "disable")
 
     def conf_import(self, filename):
+        if not os.path.isabs(filename):
+            filename = os.path.join(self.configfolder, filename)
 
-        conf = open(self.configfolder + "/" + filename)
-        services = conf.read()
-        ssplit = re.split(':|\n', services)
-
-        i = 0
-        while i < len(ssplit):
-            if ssplit[i + 1] == "enable":
-                self.to_enable.append(ssplit[i])
-            elif ssplit[i + 1] == "disable":
-                self.to_disable.append(ssplit[i])
-            else:
-                print("Errore nel file di configurazione")
-            i += 2
+        try:
+            with open(filename) as conf:
+                for line_num, line in enumerate(conf, start=1):
+                    line = line.strip()
+                    if not line:
+                        continue  # salta righe vuote
+                    if ':' not in line:
+                        print(f"Riga {line_num} ignorata: '{line}' non contiene ':'")
+                        continue
+                    name, action = map(str.strip, line.split(":", 1))
+                    if action == "enable":
+                        self.to_enable.append(name)
+                    elif action == "disable":
+                        self.to_disable.append(name)
+                    else:
+                        print(f"Riga {line_num} errore: azione non valida '{action}'")
+        except FileNotFoundError:
+            print(f"File non trovato: {filename}")
+        except Exception as e:
+            print(f"Errore durante l'importazione: {e}")
 
     def conf_import_multiple(self, filenames):
 

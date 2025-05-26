@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
+from tkinter import filedialog
+
 
 from Packages import PackagesLogic  # importa la classe logica
 
@@ -205,9 +207,25 @@ class PackagesUI(tk.Frame):
         self.selected_package = None
     
     def Export(self):
-        self.manager.conf_export("testconfigexp.config")
-    
+        filepath = filedialog.asksaveasfilename(
+            title="Salva configurazione pacchetti",
+            defaultextension=".config",
+            filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
+        )
+        if not filepath:
+            return  # Utente ha annullato
+
+        self.manager.conf_export(filepath)
+        messagebox.showinfo("Esportazione completata", f"Configurazione esportata in:\n{filepath}")
+
     def Import(self):
+        filepath = filedialog.askopenfilename(
+            title="Apri configurazione pacchetti",
+            filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
+        )
+        if not filepath:
+            return  # Utente ha annullato
+
         # Pulisci lo stato attuale
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
@@ -217,7 +235,7 @@ class PackagesUI(tk.Frame):
         self.selected_package = None
 
         # Importa la configurazione
-        self.manager.conf_import("testconfig.config")
+        self.manager.conf_import(filepath)
 
         # Unisci i pacchetti da installare e disinstallare
         all_packages = set(self.manager.to_install + self.manager.to_uninstall)
@@ -226,3 +244,5 @@ class PackagesUI(tk.Frame):
             is_installed = pkg in self.manager.to_install
             self.package_states[pkg] = is_installed
             self.add_package_row(pkg)
+
+        messagebox.showinfo("Importazione completata", f"Configurazione importata da:\n{filepath}")

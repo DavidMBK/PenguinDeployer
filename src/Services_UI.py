@@ -43,8 +43,8 @@ class ServicesUI(tk.Frame):
         self.search_entry = tk.Entry(self.bottom_frame)
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
-        for label in ["Aggiungi", "Rimuovi", "Import", "Export"]:
-            if label == "Aggiungi":
+        for label in ["test", "Rimuovi", "Import", "Export"]:
+            if label == "test":
                 cmd = self.open_package_popup
             elif label == "Rimuovi":
                 cmd = self.remove_selected_package

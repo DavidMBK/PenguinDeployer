@@ -1,3 +1,4 @@
+from functools import partial
 import tkinter as tk
 from tkinter import messagebox
 from Packages_UI import PackagesUI
@@ -35,7 +36,8 @@ class Mainwindow(tk.Frame):
         for frame in self.moduleframes:
 
             text = ""
-            match frame.__class__.__name__:
+            fname = frame.__class__.__name__
+            match fname:
                 case "PackagesUI":
                     text = "Installazione Software"
                 case "ServicesUI":
@@ -43,7 +45,7 @@ class Mainwindow(tk.Frame):
                 #aggiungi altri
 
             modulebutton = tk.Button(self.sidebar, text=text,
-                                     command=lambda: self.show_frame(frame.__class__.__name__), width=30, height=3)
+                                     command=partial(self.show_frame,fname), width=30, height=3)
             modulebutton.pack(pady=3)
             self.modulebuttons.append(modulebutton)
 

@@ -10,6 +10,8 @@ class PackagesLogic(Module):
         self.to_install: list[str] = []
         self.to_uninstall: list[str] = []
 
+        self.is_multi_import = True
+
     def install_packages(self):
         #esegui lo script per installare i pacchetti
         run = ["./src/scripts/install.sh"] + self.to_install
@@ -40,18 +42,26 @@ class PackagesLogic(Module):
         packages = conf.read()
         psplit = re.split(':|\n', packages)
 
-        self.to_install = []
-        self.to_uninstall = []
-
         i = 0
         while i < len(psplit):
             if psplit[i + 1] == "install":
-                self.to_install.append(psplit[i])
+                if psplit[i + 1] not in self.to_install:
+                    self.to_install.append(psplit[i])
             elif psplit[i + 1] == "uninstall":
-                self.to_uninstall.append(psplit[i])
+                if psplit[i + 1] not in self.to_uninstall:
+                    self.to_uninstall.append(psplit[i])
             else:
                 print("Errore nel file di configurazione")
             i += 2
+
+    def conf_import_multiple(self, filenames):
+
+        self.to_install = []
+        self.to_uninstall = []
+
+        for filename in filenames:
+            self.conf_import(filename)
+
 
     def configure(self):
 

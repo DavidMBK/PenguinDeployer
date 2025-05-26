@@ -10,7 +10,8 @@ class QuickConfig():
         self.modules = modules
         self.selected_configs = {}
 
-        # inserisci i moduli in un dizionario, per poi associare ad ogni modulo un file selezionato per la configurazione
+        # inserisci i moduli in un dizionario, per poi associare ad ogni modulo
+        # un file selezionato per la configurazione, oppure un array di file nel caso di file multipli
         for module in modules:
             self.selected_configs[module] = ""
 
@@ -39,7 +40,10 @@ class QuickConfig():
 
         #applica i file di configurazione selezionati
         for module in self.modules:
-            module.conf_import(self.selected_configs[module])
+            if module.is_multi_import:
+                module.conf_import_multiple(self.selected_configs[module])
+            else:
+                module.conf_import(self.selected_configs[module])
 
         return True
 

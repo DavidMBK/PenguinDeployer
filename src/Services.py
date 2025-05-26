@@ -11,6 +11,8 @@ class ServicesLogic(Module):
         self.to_enable = []
         self.to_disable = []
 
+        self.is_multi_import = True
+
     def service_onoff(self, service: str, enable: bool):
         #attiva o disattiva un servizio
 
@@ -43,9 +45,6 @@ class ServicesLogic(Module):
         services = conf.read()
         ssplit = re.split(':|\n', services)
 
-        self.to_enable = []
-        self.to_disable = []
-
         i = 0
         while i < len(ssplit):
             if ssplit[i + 1] == "enable":
@@ -55,6 +54,14 @@ class ServicesLogic(Module):
             else:
                 print("Errore nel file di configurazione")
             i += 2
+
+    def conf_import_multiple(self, filenames):
+
+        self.to_enable = []
+        self.to_disable = []
+
+        for filename in filenames:
+            self.conf_import(filename)
 
     def configure(self):
 

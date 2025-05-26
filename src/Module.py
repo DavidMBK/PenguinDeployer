@@ -3,6 +3,7 @@
 class Module:
 
     configfolder: str
+    modulename: str
 
     def __init__(self, nconfigfolder):
         self.configfolder = nconfigfolder

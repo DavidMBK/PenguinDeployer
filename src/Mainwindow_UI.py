@@ -1,16 +1,18 @@
 import tkinter as tk
 from tkinter import messagebox
-from Package_installer_UI import PackagesUI
+from Packages_UI import PackagesUI
+
+
 # Importa qui altri frame/moduli quando li hai, es:
 # from ServiceManagement_UI import ServiceManagementUI
 # from Personalization_UI import PersonalizationUI
 # ecc.
 
 class Mainwindow(tk.Frame):
-    def __init__(self, parent, controller, nconfigfolder):
+    def __init__(self, parent, controller, moduleframes):
         super().__init__(parent)
         self.controller = controller
-        self.nconfigfolder = nconfigfolder
+        self.moduleframes = moduleframes
 
         self.sidebar = tk.Frame(self, pady=4, padx=4)
         self.sidebar.pack(fill=tk.BOTH, side=tk.LEFT)
@@ -22,29 +24,20 @@ class Mainwindow(tk.Frame):
         # Riferimento al frame corrente mostrato
         self.current_frame = None
 
-        # Pulsanti sidebar con callback che carica i frame
-        self.modulebutton = tk.Button(self.sidebar, text='Installazione Software',command=lambda: self.show_frame("PackagesUI"), width=30, height=3)
-        self.modulebutton.pack(pady=3)
+        # Pulsanti sidebar con callback che caricano i frame
+        self.modulebuttons = []
+        for frame in moduleframes:
 
-        self.modulebutton2 = tk.Button(self.sidebar, text='Gestione Servizi',
-                                       command=lambda: self.show_frame("ServiceManagementUI"),
-                                       width=30, height=3)
-        self.modulebutton2.pack(pady=3)
+            text = ""
+            match frame.__class__.__name__:
+                case "PackagesUI":
+                    text = "Installazione Software"
+                #aggiungi altri
 
-        self.modulebutton3 = tk.Button(self.sidebar, text='Personalizzazione Ambiente',
-                                       command=lambda: self.show_frame("PersonalizationUI"),
-                                       width=30, height=3)
-        self.modulebutton3.pack(pady=3)
-
-        self.modulebutton4 = tk.Button(self.sidebar, text='Configurazione Veloce',
-                                       command=lambda: self.show_frame("QuickConfigUI"),
-                                       width=30, height=3)
-        self.modulebutton4.pack(pady=3)
-
-        self.modulebutton5 = tk.Button(self.sidebar, text='Revert',
-                                       command=lambda: self.show_frame("RevertUI"),
-                                       width=30, height=3)
-        self.modulebutton5.pack(pady=3)
+            modulebutton = tk.Button(self.sidebar, text=text,
+                                     command=lambda: self.show_frame(frame.__class__.__name__), width=30, height=3)
+            modulebutton.pack(pady=3)
+            self.modulebuttons.append(modulebutton)
 
         # Bottone per applicare le configurazioni
         self.apply = tk.Button(self.sidebar, text="Apply Configurations",
@@ -52,31 +45,20 @@ class Mainwindow(tk.Frame):
         self.apply.pack(side=tk.BOTTOM, pady=10)
 
         # Puoi caricare un frame di default, ad esempio PackagesUI
-        self.show_frame("PackagesUI")
+        self.show_frame("Packages_UI")
 
     def show_frame(self, frame_name):
         # Distruggi frame corrente se esiste
         if self.current_frame:
-            self.current_frame.destroy()
+            self.current_frame.pack_forget()
 
-        # Crea il frame corrispondente
-        if frame_name == "PackagesUI":
-            self.current_frame = PackagesUI(self.main_frame, self.controller, self.nconfigfolder)
-        elif frame_name == "ServiceManagementUI":
-            # self.current_frame = ServiceManagementUI(self.main_frame, self.controller, self.nconfigfolder)
-            self.current_frame = self.placeholder_frame("Gestione Servizi non implementato")
-        elif frame_name == "PersonalizationUI":
-            # self.current_frame = PersonalizationUI(self.main_frame, self.controller, self.nconfigfolder)
-            self.current_frame = self.placeholder_frame("Personalizzazione Ambiente non implementato")
-        elif frame_name == "QuickConfigUI":
-            # self.current_frame = QuickConfigUI(self.main_frame, self.controller, self.nconfigfolder)
-            self.current_frame = self.placeholder_frame("Configurazione Veloce non implementata")
-        elif frame_name == "RevertUI":
-            # self.current_frame = RevertUI(self.main_frame, self.controller, self.nconfigfolder)
-            self.current_frame = self.placeholder_frame("Revert non implementato")
-        else:
-            self.current_frame = self.placeholder_frame(f"Frame '{frame_name}' non trovato")
+        for frame in self.moduleframes:
+            if frame.__class__.__name__ == frame_name:
+                self.current_frame = frame
+                self.current_frame.pack(fill=tk.BOTH, expand=True)
+                return
 
+        self.current_frame = self.placeholder_frame(f"Frame '{frame_name}' non trovato")
         self.current_frame.pack(fill=tk.BOTH, expand=True)
 
     def Applychanges(self):

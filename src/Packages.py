@@ -1,12 +1,11 @@
 import re
 import subprocess
-from module import Module
+from Module import Module
 
 
 class PackagesLogic(Module):
     def __init__(self,nconfigfolder):
         super().__init__(nconfigfolder)
-        self.configfolder = nconfigfolder
 
         self.to_install: list[str] = []
         self.to_uninstall: list[str] = []

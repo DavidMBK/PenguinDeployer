@@ -2,16 +2,16 @@ import tkinter as tk
 from tkinter import messagebox
 import subprocess
 
-from packages import PackagesLogic  # importa la classe logica
+from Packages import PackagesLogic  # importa la classe logica
 
 class PackagesUI(tk.Frame):
-    def __init__(self, parent, controller,  nconfigfolder):
+    def __init__(self, parent, controller, pack):
         super().__init__(parent)
         self.controller = controller
         self.pack(fill=tk.BOTH, expand=True)
 
         self.package_states = {}
-        self.manager = PackagesLogic(nconfigfolder)
+        self.manager = pack
         self.selected_package = None  # Pacchetto selezionato
 
         # Top frame

@@ -1,7 +1,7 @@
 import re
 import subprocess
 
-from module import Module
+from Module import Module
 
 
 class Environment(Module):

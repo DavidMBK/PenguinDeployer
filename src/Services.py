@@ -1,12 +1,16 @@
 import subprocess
 
-from module import Module
+from Module import Module
 import re
 
 
 class Services(Module):
-    to_enable: list[str] = []
-    to_disable: list[str] = []
+
+    def __init__(self, nconfigfolder):
+        super().__init__(nconfigfolder)
+
+        self.to_enable = []
+        self.to_disable = []
 
     def service_onoff(self, service: str, enable: bool):
         #attiva o disattiva un servizio

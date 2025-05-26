@@ -1,31 +1,25 @@
-from tkinter import Tk
-from packages import PackagesLogic
-from services import Services
-from logger import Login
-
-# Parte GUI
-from ttkthemes import ThemedTk
+from Packages import PackagesLogic
+from Services import Services
+from Logger import Login
 from Main_UI import MainUI
 
 
 class Main:
 
-    pack: PackagesLogic
-    service: Services
+    def __init__(self):
 
-    def main(self):
+        #inizilizza altre classi
+        self.logger = Login()
 
-        #inizializza l'UI
-        root = ThemedTk()
-        #style = ttk.Style(root)
-        #style.theme_use("equilux")
-        app = MainUI(root)
-
-        #inizializza moduli
+        #inizializza i moduli
         self.pack = PackagesLogic("src/configs/packages")
         self.service = Services("src/configs/services")
 
-        root.mainloop()
+        #inizialliza l'UI principale
+        self.mainUI = MainUI(self)
+
+    def main(self):
+        pass
 
     def runconfig(self):
 
@@ -36,12 +30,5 @@ class Main:
 
 
 if __name__=="__main__":
-    # m = Main()
-    # m.main()
-
-    # Questo è la configurazione con best practise dell'UI
-    nconfigfolder = "src/configs/packages"
-
-    root = Tk()
-    app = MainUI(root, nconfigfolder)
-    root.mainloop()
+    m = Main()
+    m.main()

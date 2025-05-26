@@ -1,8 +1,6 @@
 import tkinter as tk
 from Logger_UI import LoginFrame
 from Mainwindow_UI import Mainwindow
-from Packages_UI import PackagesUI
-
 
 class MainUI:
 
@@ -16,14 +14,12 @@ class MainUI:
 
         # Istanzio i frame, passando root, controller e modulo se necessario (self)
         loginf = LoginFrame(self.root, self, self.main.logger)
-        packagesf = PackagesUI(self.root, self, self.main.pack)
-        mainwindowf = Mainwindow(self.root, self, [packagesf])  # passa in input l'array di frame
+        mainwindowf = Mainwindow(self.root, self, self.main)  # passa in input l'array di frame
 
         # Lo salvo nel dizionario con chiave il nome della classe
         self.frames = {
             mainwindowf.__class__.__name__: mainwindowf,
             loginf.__class__.__name__: loginf,
-            packagesf.__class__.__name__: packagesf
         }
 
         # Posiziono i frame dentro root, occupa tutta la finestra
@@ -32,7 +28,6 @@ class MainUI:
 
         # self.show_frame("LoginFrame")
         self.show_frame("Mainwindow")
-        # self.show_frame("PackagesUI")
 
         self.root.mainloop()
 
@@ -54,8 +49,5 @@ class MainUI:
             self.center_window(925, 500)
             self.root.resizable(False, False)
         elif name == "Mainwindow":
-            self.center_window(1200, 800)
-            self.root.resizable(True, True)
-        elif name == "PackagesUI":
             self.center_window(1200, 800)
             self.root.resizable(True, True)

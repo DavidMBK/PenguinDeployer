@@ -9,10 +9,10 @@ from Packages_UI import PackagesUI
 # ecc.
 
 class Mainwindow(tk.Frame):
-    def __init__(self, parent, controller, moduleframes):
+    def __init__(self, parent, controller, main):
         super().__init__(parent)
         self.controller = controller
-        self.moduleframes = moduleframes
+        self.main = main
 
         self.sidebar = tk.Frame(self, pady=4, padx=4)
         self.sidebar.pack(fill=tk.BOTH, side=tk.LEFT)
@@ -21,12 +21,16 @@ class Mainwindow(tk.Frame):
         self.main_frame = tk.Frame(self, borderwidth=3, relief="ridge")
         self.main_frame.pack(expand=True, fill=tk.BOTH, side=tk.RIGHT)
 
+        self.moduleframes = [
+            PackagesUI(self.main_frame, self, main)
+        ]  # aggiungere gli altri man mano
+
         # Riferimento al frame corrente mostrato
         self.current_frame = None
 
         # Pulsanti sidebar con callback che caricano i frame
         self.modulebuttons = []
-        for frame in moduleframes:
+        for frame in self.moduleframes:
 
             text = ""
             match frame.__class__.__name__:

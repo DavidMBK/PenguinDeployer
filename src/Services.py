@@ -4,7 +4,7 @@ from Module import Module
 import re
 
 
-class Services(Module):
+class ServicesLogic(Module):
 
     def __init__(self, nconfigfolder):
         super().__init__(nconfigfolder)

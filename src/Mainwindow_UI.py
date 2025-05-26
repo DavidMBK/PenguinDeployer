@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from Packages_UI import PackagesUI
+from Services_UI import ServicesUI
 
 
 # Importa qui altri frame/moduli quando li hai, es:
@@ -22,7 +23,8 @@ class Mainwindow(tk.Frame):
         self.main_frame.pack(expand=True, fill=tk.BOTH, side=tk.RIGHT)
 
         self.moduleframes = [
-            PackagesUI(self.main_frame, self, main)
+            PackagesUI(self.main_frame, self, main),
+            ServicesUI(self.main_frame, self, main)
         ]  # aggiungere gli altri man mano
 
         # Riferimento al frame corrente mostrato
@@ -36,6 +38,8 @@ class Mainwindow(tk.Frame):
             match frame.__class__.__name__:
                 case "PackagesUI":
                     text = "Installazione Software"
+                case "ServicesUI":
+                    text = "Installazione Servizi"
                 #aggiungi altri
 
             modulebutton = tk.Button(self.sidebar, text=text,

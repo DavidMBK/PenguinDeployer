@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 from Packages_UI import PackagesUI
 from Services_UI import ServicesUI
+from Environment_UI import EnvironmentUI
 
 
 # Importa qui altri frame/moduli quando li hai, es:
@@ -25,7 +26,9 @@ class Mainwindow(tk.Frame):
 
         self.moduleframes = [
             PackagesUI(self.main_frame, self, self.main.pack),
-            ServicesUI(self.main_frame, self, self.main.service)
+            ServicesUI(self.main_frame, self, self.main.service),
+            EnvironmentUI(self.main_frame, self, self.main.environment)
+
         ]  # aggiungere gli altri man mano
 
         # Riferimento al frame corrente mostrato
@@ -42,6 +45,8 @@ class Mainwindow(tk.Frame):
                     text = "Installazione Software"
                 case "ServicesUI":
                     text = "Installazione Servizi"
+                case "EnvironmentUI":
+                    text = "Configurazione Ambiente"
                 #aggiungi altri
 
             modulebutton = tk.Button(self.sidebar, text=text,

@@ -1,6 +1,7 @@
 from Packages import PackagesLogic
 from Services import ServicesLogic
 from Quickconfig import QuickConfig
+from environment import EnvironmentLogic
 from Logger import Login
 from Main_UI import MainUI
 
@@ -15,6 +16,7 @@ class Main:
         #inizializza i moduli
         self.pack = PackagesLogic("src/configs/packages")
         self.service = ServicesLogic("src/configs/services")
+        self.environment = EnvironmentLogic("src/configs/environment")
         self.quick = QuickConfig([self.pack,self.service])
 
         #inizialliza l'UI principale

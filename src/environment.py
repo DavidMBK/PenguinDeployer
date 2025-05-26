@@ -4,7 +4,7 @@ import subprocess
 from Module import Module
 
 
-class Environment(Module):
+class EnvironmentLogic(Module):
 
     def __init__(self, nconfigfolder):
         super().__init__(nconfigfolder)
@@ -71,7 +71,7 @@ class Environment(Module):
     def configure(self):
         self.set_env_configs()
 
-
+'''
 if __name__ == "__main__":
     e = Environment("src/configs/environment")
 
@@ -83,3 +83,4 @@ if __name__ == "__main__":
 
     #testing configuration
     e.configure()
+'''

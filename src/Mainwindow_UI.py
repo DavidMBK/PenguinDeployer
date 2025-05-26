@@ -69,9 +69,10 @@ class Mainwindow(tk.Frame):
     def Applychanges(self):
         response = messagebox.askquestion("Confirm Changes", "Do you want to apply the changes?")
         if response == "yes":
-            print("Success")
+            print("configurazione")
+            #self.main.runconfig()
         elif response == "no":
-            print("Error")
+            return
 
     def placeholder_frame(self, message):
         # Frame semplice per placeholder se il frame non è implementato

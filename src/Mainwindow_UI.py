@@ -24,8 +24,8 @@ class Mainwindow(tk.Frame):
         self.main_frame.pack(expand=True, fill=tk.BOTH, side=tk.RIGHT)
 
         self.moduleframes = [
-            PackagesUI(self.main_frame, self, main),
-            ServicesUI(self.main_frame, self, main)
+            PackagesUI(self.main_frame, self, self.main.pack),
+            ServicesUI(self.main_frame, self, self.main.service)
         ]  # aggiungere gli altri man mano
 
         # Riferimento al frame corrente mostrato

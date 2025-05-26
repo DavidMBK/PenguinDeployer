@@ -5,13 +5,13 @@ import subprocess
 from Services import ServicesLogic  # importa la classe logica
 
 class ServicesUI(tk.Frame):
-    def __init__(self, parent, controller, pack):
+    def __init__(self, parent, controller, service):
         super().__init__(parent)
         self.controller = controller
 
-        self.package_states = {}
-        self.manager = pack
-        self.selected_package = None  # Pacchetto selezionato
+        self.service_states = {}
+        self.manager = service
+        self.selected_service = None  # Pacchetto selezionato
 
         # Top frame
         self.top_frame = tk.LabelFrame(self, padx=10, pady=10)
@@ -43,11 +43,11 @@ class ServicesUI(tk.Frame):
         self.search_entry = tk.Entry(self.bottom_frame)
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
-        for label in ["test", "Rimuovi", "Import", "Export"]:
-            if label == "test":
-                cmd = self.open_package_popup
+        for label in ["Aggiungi", "Rimuovi", "Import", "Export"]:
+            if label == "Aggiungi":
+                cmd = self.open_service_popup
             elif label == "Rimuovi":
-                cmd = self.remove_selected_package
+                cmd = self.remove_selected_service
             elif label == "Import":
                 cmd = self.Import
             elif label == "Export":
@@ -84,14 +84,14 @@ class ServicesUI(tk.Frame):
 
 
 
-    def add_package_row(self, pkg_name):
+    def add_service_row(self, pkg_name):
         row = tk.Frame(self.scrollable_frame, name=pkg_name)
         row.pack(fill=tk.X, expand=True)
         row.grid_columnconfigure(0, weight=1)
         row.grid_columnconfigure(1, weight=0)
 
         def on_select(event, name=pkg_name):
-            self.selected_package = name
+            self.selected_service = name
             # Evidenzia la riga selezionata
             for widget in self.scrollable_frame.winfo_children():
                 widget.config(bg="#d9d9d9")
@@ -111,8 +111,8 @@ class ServicesUI(tk.Frame):
         toggle_btn.config(command=lambda name=pkg_name, btn=toggle_btn: self.toggle_install(name, btn))
 
     def toggle_install(self, pkg_name, button):
-        self.package_states[pkg_name] = not self.package_states[pkg_name]
-        new_state = self.package_states[pkg_name]
+        self.service_states[pkg_name] = not self.service_states[pkg_name]
+        new_state = self.service_states[pkg_name]
 
         button.config(text=self._get_button_text(pkg_name))
         action = "Enable" if new_state else "Disable"
@@ -131,13 +131,14 @@ class ServicesUI(tk.Frame):
             # Rimosso dalla lista to_enable, se presente
             if pkg_name in self.manager.to_enable:
                 self.manager.to_enable.remove(pkg_name)
+        self.manager.debug()
 
       
     def _get_button_text(self, pkg_name):
         # Se False (non installato), testo bottone è "Install"
-        return "Enable" if self.package_states.get(pkg_name, False) else "Disable"
+        return "Enable" if self.service_states.get(pkg_name, False) else "Disable"
 
-    def open_package_popup(self):
+    def open_service_popup(self):
         query = self.search_entry.get().strip()
         if not query:
             messagebox.showwarning("Input mancante", "Inserisci un nome pacchetto da cercare.")
@@ -174,9 +175,9 @@ class ServicesUI(tk.Frame):
                 return
 
             pkg_name = listbox.get(selected[0])
-            if pkg_name not in self.package_states:
-                self.package_states[pkg_name] = True
-                self.add_package_row(pkg_name)
+            if pkg_name not in self.service_states:
+                self.service_states[pkg_name] = True
+                self.add_service_row(pkg_name)
                 self.manager.to_enable.append(pkg_name)
             else:
                 messagebox.showinfo("Esiste già", f"{pkg_name} è già presente.")
@@ -185,9 +186,9 @@ class ServicesUI(tk.Frame):
 
         tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
 
-    def remove_selected_package(self):
-        pkg = self.selected_package
-        if not pkg or pkg not in self.package_states:
+    def remove_selected_service(self):
+        pkg = self.selected_service
+        if not pkg or pkg not in self.service_states:
             messagebox.showwarning("Nessuna selezione", "Seleziona prima un pacchetto.")
             return
 
@@ -198,11 +199,11 @@ class ServicesUI(tk.Frame):
                 break
 
         # Rimuovi dagli stati e dalle liste manager
-        del self.package_states[pkg]
+        del self.service_states[pkg]
         self.manager.to_enable = [p for p in self.manager.to_enable if p != pkg]
         self.manager.to_disable = [p for p in self.manager.to_disable if p != pkg]
 
-        self.selected_package = None
+        self.selected_service = None
     
     def Export(self):
         self.manager.conf_export("testconfigexp.config")
@@ -211,18 +212,18 @@ class ServicesUI(tk.Frame):
         # Pulisci lo stato attuale
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
-        self.package_states.clear()
+        self.service_states.clear()
         self.manager.to_enable.clear()
         self.manager.to_disable.clear()
-        self.selected_package = None
+        self.selected_service = None
 
         # Importa la configurazione
         self.manager.conf_import("testconfig.config")
 
         # Unisci i pacchetti da installare e disinstallare
-        all_packages = set(self.manager.to_enable + self.manager.to_disable)
+        all_services = set(self.manager.to_enable + self.manager.to_disable)
 
-        for pkg in all_packages:
+        for pkg in all_services:
             is_installed = pkg in self.manager.to_enable
-            self.package_states[pkg] = is_installed
-            self.add_package_row(pkg)
+            self.service_states[pkg] = is_installed
+            self.add_service_row(pkg)

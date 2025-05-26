@@ -1,5 +1,4 @@
 import subprocess
-
 from Module import Module
 import re
 
@@ -64,6 +63,11 @@ class ServicesLogic(Module):
 
         for service in self.to_disable:
             self.service_onoff(service, False)
+
+    def debug(self):
+        print(f'Abilitati: {self.to_enable}')
+        print(f'Disabilitati: {self.to_disable}')
+
 
 
 """

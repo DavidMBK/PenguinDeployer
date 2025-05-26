@@ -6,7 +6,6 @@ class QuickConfig():
 
     selected_configs: dict
 
-    # IMPORTANT: have quick config inherit from module, probably.
     def __init__(self, modules):
         self.modules = modules
 

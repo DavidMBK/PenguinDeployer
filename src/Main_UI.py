@@ -34,6 +34,8 @@ class MainUI:
         self.show_frame("Mainwindow")
         # self.show_frame("PackagesUI")
 
+        self.root.mainloop()
+
     # metodo per passaggio frame    
     def show_frame(self, name):
         frame = self.frames[name]

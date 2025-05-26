@@ -8,28 +8,26 @@ class PackagesUI(tk.Frame):
     def __init__(self, parent, controller, pack):
         super().__init__(parent)
         self.controller = controller
-        self.pack(fill=tk.BOTH, expand=True)
 
         self.package_states = {}
         self.manager = pack
         self.selected_package = None  # Pacchetto selezionato
 
         # Top frame
-        top_frame = tk.LabelFrame(self, padx=10, pady=10)
-        top_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(10, 5))
+        self.top_frame = tk.LabelFrame(self, padx=10, pady=10)
+        self.top_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(10, 5))
 
         # Bottom frame
-        bottom_frame = tk.LabelFrame(self, padx=10, pady=10)
-        bottom_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
+        self.bottom_frame = tk.LabelFrame(self, padx=10, pady=10)
+        self.bottom_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
 
         # Scrollable area
-        container = tk.Frame(top_frame)
-        container.pack(fill=tk.BOTH, expand=True)
+        self.container = tk.Frame(self.top_frame)
+        self.container.pack(fill=tk.BOTH, expand=True)
 
-        self.canvas = tk.Canvas(container)
-        self.scrollbar = tk.Scrollbar(container, orient="vertical", command=self.canvas.yview)
+        self.canvas = tk.Canvas(self.container)
+        self.scrollbar = tk.Scrollbar(self.container, orient="vertical", command=self.canvas.yview)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.scrollable_frame = tk.Frame(self.canvas)
         self.window_id = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
@@ -37,11 +35,12 @@ class PackagesUI(tk.Frame):
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.scrollable_frame.bind("<Configure>", self._update_scroll_region)
         self.canvas.bind("<Configure>", self._on_canvas_resize)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.scrollable_frame.bind("<Enter>", self._bind_to_mousewheel)
         self.scrollable_frame.bind("<Leave>", self._unbind_from_mousewheel)
 
         # Bottom controls
-        self.search_entry = tk.Entry(bottom_frame)
+        self.search_entry = tk.Entry(self.bottom_frame)
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
         for label in ["Aggiungi", "Rimuovi", "Import", "Export"]:
@@ -53,7 +52,8 @@ class PackagesUI(tk.Frame):
                 cmd = self.Import
             elif label == "Export":
                 cmd = self.Export
-            tk.Button(bottom_frame, text=label, command=cmd).pack(side=tk.LEFT, padx=2)
+            tk.Button(self.bottom_frame, text=label, command=cmd).pack(side=tk.LEFT, padx=2)
+
 
     def placeholder_action(self):
         messagebox.showinfo("Info", "Funzionalità non implementata.")

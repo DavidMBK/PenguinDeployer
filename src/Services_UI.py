@@ -11,7 +11,7 @@ class ServicesUI(tk.Frame):
 
         self.service_states = {}
         self.manager = service
-        self.selected_service = None  # Pacchetto selezionato
+        self.selected_service = None  # servizio selezionato
 
         # Top frame
         self.top_frame = tk.LabelFrame(self, padx=10, pady=10)
@@ -85,7 +85,7 @@ class ServicesUI(tk.Frame):
 
 
     def add_service_row(self, pkg_name):
-        row = tk.Frame(self.scrollable_frame, name=pkg_name)
+        row = tk.Frame(self.scrollable_frame, name=pkg_name)  # assegna un name usabile da winfo_name
         row.pack(fill=tk.X, expand=True)
         row.grid_columnconfigure(0, weight=1)
         row.grid_columnconfigure(1, weight=0)
@@ -95,20 +95,20 @@ class ServicesUI(tk.Frame):
             # Evidenzia la riga selezionata
             for widget in self.scrollable_frame.winfo_children():
                 widget.config(bg="#d9d9d9")
-            row.config(bg="#bdbdbd")  # colore evidenziato
+            row.config(bg="#bdbdbd")
 
         name_label = tk.Label(row, text=pkg_name, anchor="w")
         name_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
         name_label.bind("<Button-1>", on_select)
         row.bind("<Button-1>", on_select)
 
-        toggle_btn = tk.Button(
-            row,
-            text=self._get_button_text(pkg_name),
-            command=lambda name=pkg_name, btn=None: self.toggle_install(name, btn)
-        )
+        toggle_btn = tk.Button(row)
         toggle_btn.grid(row=0, column=1, sticky="e", padx=10, pady=2)
-        toggle_btn.config(command=lambda name=pkg_name, btn=toggle_btn: self.toggle_install(name, btn))
+        toggle_btn.config(
+            text=self._get_button_text(pkg_name),
+            command=lambda name=pkg_name, btn=toggle_btn: self.toggle_install(name, btn)
+        )
+
 
     def toggle_install(self, pkg_name, button):
         self.service_states[pkg_name] = not self.service_states[pkg_name]
@@ -141,27 +141,25 @@ class ServicesUI(tk.Frame):
     def open_service_popup(self):
         query = self.search_entry.get().strip()
         if not query:
-            messagebox.showwarning("Input mancante", "Inserisci un nome pacchetto da cercare.")
+            messagebox.showwarning("Input mancante", "Inserisci un nome servizio da cercare.")
             return
 
         try:
-            comand = ["./src/scripts/search_pack.sh"] + [query]
-            result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-            matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
+            matches = self.manager.find_service(query)
 
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Errore", f"Errore nella ricerca: {e.stderr}")
             return
 
         if not matches:
-            messagebox.showinfo("Nessun risultato", "Nessun pacchetto trovato.")
+            messagebox.showinfo("Nessun risultato", "Nessun servizio trovato.")
             return
 
         popup = tk.Toplevel(self)
         popup.title("Pacchetti trovati")
         popup.geometry("400x300")
 
-        tk.Label(popup, text="Seleziona un pacchetto da installare").pack(pady=5)
+        tk.Label(popup, text="Seleziona un servizio da installare").pack(pady=5)
 
         listbox = tk.Listbox(popup)
         for match in matches:
@@ -171,7 +169,7 @@ class ServicesUI(tk.Frame):
         def install_selected():
             selected = listbox.curselection()
             if not selected:
-                messagebox.showwarning("Nessuna selezione", "Seleziona un pacchetto.")
+                messagebox.showwarning("Nessuna selezione", "Seleziona un servizio.")
                 return
 
             pkg_name = listbox.get(selected[0])
@@ -189,14 +187,15 @@ class ServicesUI(tk.Frame):
     def remove_selected_service(self):
         pkg = self.selected_service
         if not pkg or pkg not in self.service_states:
-            messagebox.showwarning("Nessuna selezione", "Seleziona prima un pacchetto.")
+            messagebox.showwarning("Nessuna selezione", "Seleziona prima un servizio.")
             return
 
         # Rimuovi widget dalla UI
-        for widget in self.scrollable_frame.winfo_children():
-            if widget.winfo_name() == pkg:
-                widget.destroy()
-                break
+        try:
+            row = self.scrollable_frame.nametowidget(pkg)
+            row.destroy()
+        except KeyError:
+            pass
 
         # Rimuovi dagli stati e dalle liste manager
         del self.service_states[pkg]
@@ -204,6 +203,7 @@ class ServicesUI(tk.Frame):
         self.manager.to_disable = [p for p in self.manager.to_disable if p != pkg]
 
         self.selected_service = None
+
     
     def Export(self):
         self.manager.conf_export("testconfigexp.config")

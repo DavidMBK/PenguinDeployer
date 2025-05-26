@@ -62,6 +62,11 @@ class PackagesLogic(Module):
         print(f'installati: {self.to_install}')
         print(f'Disinstallati: {self.to_uninstall}')
 
+    def find_package(self, query):
+        comand = ["./src/scripts/search_pack.sh"] + [query]
+        result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
+        return matches
 
 '''
 if __name__ == "__main__":

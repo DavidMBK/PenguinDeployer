@@ -69,6 +69,13 @@ class ServicesLogic(Module):
         print(f'Disabilitati: {self.to_disable}')
 
 
+    def find_service(self, query):  
+        comand = ["./src/scripts/systemctl.sh"] + [query]
+        result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        matches = [m.strip() for m in result.stdout.strip().split("\n") if m.strip()]
+        matches = [m.replace(".service", "") if m.endswith(".service") else m for m in matches]
+        return matches
+
 
 """
 if __name__ == "__main__":

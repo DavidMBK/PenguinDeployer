@@ -146,9 +146,7 @@ class PackagesUI(tk.Frame):
             return
 
         try:
-            comand = ["./src/scripts/search_pack.sh"] + [query]
-            result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-            matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
+            matches = self.manager.find_package(query)
 
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Errore", f"Errore nella ricerca: {e.stderr}")

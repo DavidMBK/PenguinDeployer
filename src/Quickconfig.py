@@ -8,6 +8,7 @@ class QuickConfig():
 
     def __init__(self, modules):
         self.modules = modules
+        self.selected_configs = {}
 
         # inserisci i moduli in un dizionario, per poi associare ad ogni modulo un file selezionato per la configurazione
         for module in modules:

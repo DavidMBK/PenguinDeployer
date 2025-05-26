@@ -36,6 +36,20 @@ class EnvironmentUI(tk.Frame):
             variable=self.gconfigs_var
         )
         self.gconfigs_check.pack(anchor="w", pady=10)
+
+        info_frame = tk.Frame(self.main_frame)
+        info_frame.pack(fill=tk.X, pady=(2, 10), padx=5)
+
+        info_label = tk.Label(
+            info_frame,
+            text="Se selezionato, include anche le configurazioni generali di sistema (gconfigs)\n"
+                "come file bashrc, profili di sistema, configurazioni di terminale ecc.",
+            font=("Arial", 9),
+            justify="left",
+            fg="gray30",
+            wraplength=600
+        )
+        info_label.pack(anchor="w")
         
         btn_frame = tk.Frame(self.main_frame)
         btn_frame.pack(fill=tk.X, pady=10)
@@ -45,6 +59,8 @@ class EnvironmentUI(tk.Frame):
         self.status_var = tk.StringVar()
         self.status_bar = tk.Label(self.main_frame, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status_bar.pack(fill=tk.X, pady=(10,0))
+
+        
         
         self.update_status("Pronto")
 

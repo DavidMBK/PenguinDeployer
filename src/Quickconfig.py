@@ -16,7 +16,40 @@ class QuickConfig():
             self.selected_configs[module] = ""
 
     def importconfig(self, to_import):
-        shutil.unpack_archive(to_import, os.getcwd() + "/configs", "tar", )
+        import tarfile
+
+        extract_temp_path = os.path.join(os.getcwd(), "temp_import_config")
+        os.makedirs(extract_temp_path, exist_ok=True)
+
+        # Pulisce prima il contenuto se già esiste
+        for f in os.listdir(extract_temp_path):
+            fpath = os.path.join(extract_temp_path, f)
+            if os.path.isdir(fpath):
+                shutil.rmtree(fpath)
+            else:
+                os.remove(fpath)
+
+        # Estrai in temp
+        with tarfile.open(to_import, "r") as tar:
+            tar.extractall(path=extract_temp_path)
+
+        # Sposta manualmente il contenuto da temp/configs/ a ./configs/
+        src_config_dir = os.path.join(extract_temp_path, "configs")
+        dest_config_dir = os.path.join(os.getcwd(), "configs")
+
+        for item in os.listdir(src_config_dir):
+            src_path = os.path.join(src_config_dir, item)
+            dest_path = os.path.join(dest_config_dir, item)
+
+            if os.path.isdir(src_path):
+                if os.path.exists(dest_path):
+                    shutil.rmtree(dest_path)
+                shutil.copytree(src_path, dest_path)
+            else:
+                shutil.copy2(src_path, dest_path)
+
+        shutil.rmtree(extract_temp_path)  # Cleanup
+
 
     def exportconfig(self, exportpath):
         #esporta le configurazioni

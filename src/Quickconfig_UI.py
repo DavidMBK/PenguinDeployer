@@ -1,217 +1,248 @@
-import tkinter as tk
-from tkinter import messagebox, filedialog
 import os
+import shutil
+import tarfile
+import tkinter as tk
+from tkinter import messagebox, filedialog, ttk
 from functools import partial
-
 
 class QuickConfigUI(tk.Frame):
     def __init__(self, parent, controller, quick_config_manager):
         super().__init__(parent)
         self.controller = controller
         self.manager = quick_config_manager
-        
-        self.main_frame = tk.Frame(self)
-        self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        
-        # Titolo
-        title_label = tk.Label(
-            self.main_frame, 
-            text="Configurazione Veloce",
-            font=("Arial", 12, "bold")
-        )
-        title_label.pack(pady=(0, 15))
-        
-        # Tabella moduli-file
-        self.module_entries = {}
-        self.module_buttons = {}
-        
-        # Frame per la tabella
-        table_frame = tk.Frame(self.main_frame)
-        table_frame.pack(fill=tk.X, pady=5)
-        
-        # Intestazioni colonne
-        tk.Label(table_frame, text="Modulo", width=15, anchor="w").grid(row=0, column=0, padx=5)
-        tk.Label(table_frame, text="File", width=25, anchor="w").grid(row=0, column=1, padx=5)
-        tk.Label(table_frame, text="Azione", width=10, anchor="w").grid(row=0, column=2, padx=5)
-        
-        # Righe della tabella per ogni modulo
-        for i, module in enumerate(self.manager.modules, start=1):
-            # Etichetta modulo
-            module_label = tk.Label(table_frame, text=module.__class__.__name__, width=15, anchor="w")
-            module_label.grid(row=i, column=0, padx=5, pady=2)
-            
-            # Campo di input per il file
-            file_entry = tk.Entry(table_frame, width=25)
-            file_entry.grid(row=i, column=1, padx=5, pady=2)
-            self.module_entries[module] = file_entry
-            
-            # Pulsante per selezionare file
-            btn_text = "Seleziona file" if not getattr(module, "is_multi_import", False) else "Seleziona file multipli"
-            select_btn = tk.Button(
-                table_frame, 
-                text=btn_text, 
-                width=15,
-                command=partial(self.select_files, module)
-            )
-            select_btn.grid(row=i, column=2, padx=5, pady=2)
-            self.module_buttons[module] = select_btn
-        
-        # Pulsanti nella parte inferiore
-        btn_frame = tk.Frame(self.main_frame)
-        btn_frame.pack(fill=tk.X, pady=(15, 5))
-        
-        # Pulsanti allineati a destra
-        inner_btn_frame = tk.Frame(btn_frame)
-        inner_btn_frame.pack(side=tk.RIGHT)
-        
-        tk.Button(
-            inner_btn_frame, 
-            text="apply", 
-            width=10, 
-            command=self.apply_configs
-        ).pack(side=tk.LEFT, padx=5)
-        
-        tk.Button(
-            inner_btn_frame, 
-            text="export", 
-            width=10, 
-            command=self.export_config
-        ).pack(side=tk.LEFT, padx=5)
-        
-        tk.Button(
-            inner_btn_frame, 
-            text="import", 
-            width=10, 
-            command=self.import_config
-        ).pack(side=tk.LEFT, padx=5)
-        
-        # Barra di stato
-        self.status_var = tk.StringVar()
-        self.status_bar = tk.Label(
-            self.main_frame, 
-            textvariable=self.status_var, 
-            bd=1, relief=tk.SUNKEN, anchor=tk.W
-        )
-        self.status_bar.pack(fill=tk.X, pady=(10, 0))
-        
-        self.update_status("Pronto")
 
-    def update_status(self, message):
-        self.status_var.set(message)
+        self.selected_packages = set()
+        self.selected_services = set()
+        self.selected_env = None
+        self.config_path = "src/configs"  # percorso dove risiede configs
+
+        self.current_section = "packages"  # Default
+
+        self._setup_ui()
+        self.load_config_structure()
+        self.show_packages()
+
+    def _setup_ui(self):
+        top_frame = tk.Frame(self)
+        top_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        tk.Button(top_frame, text="Packages", command=self.show_packages).pack(side=tk.LEFT, padx=5)
+        tk.Button(top_frame, text="Services", command=self.show_services).pack(side=tk.LEFT, padx=5)
+        tk.Button(top_frame, text="Environment", command=self.show_environment).pack(side=tk.LEFT, padx=5)
+
+        self.main_frame = tk.Frame(self, bd=2, relief=tk.GROOVE)
+        self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        bottom_frame = tk.Frame(self)
+        bottom_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        tk.Button(bottom_frame, text="Import Config", command=self.import_config).pack(side=tk.LEFT, padx=5)
+        tk.Button(bottom_frame, text="Export Config", command=self.export_config).pack(side=tk.LEFT, padx=5)
+        tk.Button(bottom_frame, text="Apply Config", command=self.apply_configs).pack(side=tk.RIGHT, padx=5)
+
+        self.status_var = tk.StringVar()
+        status_bar = tk.Label(self, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        status_bar.pack(fill=tk.X)
+
+    def update_status(self, msg):
+        self.status_var.set(msg)
         self.update_idletasks()
 
-    def select_files(self, module):
-        """Seleziona file per un modulo specifico"""
-        try:
-            if module.is_multi_import:
-                filepaths = filedialog.askopenfilenames(
-                    title=f"Seleziona file per {module.__class__.__name__}",
-                    filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
-                )
-                if filepaths:
-                    # Prendi solo i nomi dei file (non i percorsi completi)
-                    filenames = [os.path.basename(f) for f in filepaths]
-                    self.module_entries[module].delete(0, tk.END)
-                    self.module_entries[module].insert(0, "; ".join(filenames))
-                    self.manager.selected_configs[module] = filenames
-            else:
-                filepath = filedialog.askopenfilename(
-                    title=f"Seleziona file per {module.__class__.__name__}",
-                    filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
-                )
-                if filepath:
-                    filename = os.path.basename(filepath)
-                    self.module_entries[module].delete(0, tk.END)
-                    self.module_entries[module].insert(0, filename)
-                    self.manager.selected_configs[module] = filename
-            
-            self.update_status(f"File selezionato per {module.__class__.__name__}")
-        except Exception as e:
-            self.update_status(f"Errore nella selezione file")
-            messagebox.showerror("Errore", f"Selezione file fallita:\n{str(e)}")
+    def clear_main_frame(self):
+        for w in self.main_frame.winfo_children():
+            w.destroy()
 
-    def apply_configs(self):
-        """Applica le configurazioni selezionate"""
-        try:
-            # Prima verifichiamo che tutte le configurazioni siano selezionate
-            for module in self.manager.modules:
-                if not self.manager.selected_configs.get(module):
-                    messagebox.showwarning("Attenzione", f"Selezionare un file di configurazione per {module.__class__.__name__}!")
-                    return
-            
-            # Esegui l'applicazione delle configurazioni
-            success = self.manager.apply_configs()
-            
-            if success:
-                self.update_status("Configurazioni applicate con successo")
-                messagebox.showinfo("Successo", "Tutte le configurazioni sono state applicate correttamente!")
-                # Esegui anche la configurazione tramite il main controller
-                self.controller.main.runconfig()
-            else:
-                self.update_status("Configurazioni mancanti")
-                messagebox.showwarning("Attenzione", "Selezionare un file di configurazione per ogni modulo!")
-        except Exception as e:
-            self.update_status("Errore nell'applicazione")
-            messagebox.showerror("Errore", f"Applicazione fallita:\n{str(e)}")
+    def load_config_structure(self):
+        def list_configs(subfolder):
+            path = os.path.join(self.config_path, subfolder)
+            if os.path.exists(path):
+                return sorted([f for f in os.listdir(path) if f.endswith('.config')])
+            return []
+
+        self.packages_configs = list_configs("packages")
+        self.services_configs = list_configs("services")
+        self.env_configs = list_configs("environment")
+
+    def _create_scrollable_checkbox_list(self, items, selected_set, update_callback):
+        frame = tk.Frame(self.main_frame)
+        frame.pack(fill=tk.BOTH, expand=True)
+
+        canvas = tk.Canvas(frame)
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas)
+
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        vars_dict = {}
+        for cfg in items:
+            var = tk.BooleanVar(value=(cfg in selected_set))
+            cb = tk.Checkbutton(scrollable_frame, text=cfg, variable=var,
+                                command=partial(update_callback, cfg, var))
+            cb.pack(anchor="w", padx=5, pady=2)
+            vars_dict[cfg] = var
+        return vars_dict
+
+    def show_packages(self):
+        self.current_section = "packages"
+        self.clear_main_frame()
+        tk.Label(self.main_frame, text="Select Packages:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
+
+        if not self.packages_configs:
+            tk.Label(self.main_frame, text="No package configs found.", fg="red").pack()
+            self.package_vars = {}
+            return
+
+        self.package_vars = self._create_scrollable_checkbox_list(
+            self.packages_configs, self.selected_packages, self.update_package_selection
+        )
+
+    def show_services(self):
+        self.current_section = "services"
+        self.clear_main_frame()
+        tk.Label(self.main_frame, text="Select Services:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
+
+        if not self.services_configs:
+            tk.Label(self.main_frame, text="No service configs found.", fg="red").pack()
+            self.service_vars = {}
+            return
+
+        self.service_vars = self._create_scrollable_checkbox_list(
+            self.services_configs, self.selected_services, self.update_service_selection
+        )
+
+    def show_environment(self):
+        self.current_section = "environment"
+        self.clear_main_frame()
+        tk.Label(self.main_frame, text="Select Environment:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
+
+        if not self.env_configs:
+            tk.Label(self.main_frame, text="No environment configs found.", fg="red").pack()
+            self.env_var = tk.StringVar()
+            self.selected_env = None
+            return
+
+        if self.selected_env not in self.env_configs:
+            self.selected_env = None
+
+        self.env_var = tk.StringVar(value=self.selected_env if self.selected_env else "")
+        for cfg in self.env_configs:
+            rb = tk.Radiobutton(self.main_frame, text=cfg, variable=self.env_var, value=cfg,
+                                command=self.update_env_selection)
+            rb.pack(anchor="w", padx=5, pady=2)
+
+    def update_package_selection(self, config, var):
+        if var.get():
+            self.selected_packages.add(config)
+        else:
+            self.selected_packages.discard(config)
+        self.update_status(f"Selected packages: {len(self.selected_packages)}")
+
+    def update_service_selection(self, config, var):
+        if var.get():
+            self.selected_services.add(config)
+        else:
+            self.selected_services.discard(config)
+        self.update_status(f"Selected services: {len(self.selected_services)}")
+
+    def update_env_selection(self):
+        self.selected_env = self.env_var.get()
+        self.update_status(f"Selected environment: {self.selected_env}")
 
     def import_config(self):
-        """Importa una configurazione da file"""
+        filepath = filedialog.askopenfilename(
+            title="Import Configuration",
+            filetypes=[("Tar archives", "*.tar")]
+        )
+        if not filepath:
+            return  # Utente ha annullato
+
         try:
-            filepath = filedialog.askopenfilename(
-                title="Seleziona file configurazione da importare",
-                filetypes=[("Archivio configurazione", "*.tar"), ("Tutti i file", "*.*")]
-            )
-            if not filepath:
-                return
-
-            filename = os.path.basename(filepath)
-            self.update_status(f"Importazione {filename} in corso...")
-            
             self.manager.importconfig(filepath)
-            
-            # Dopo l'importazione, aggiorna l'interfaccia con i file importati
-            for module in self.manager.modules:
-                config = self.manager.selected_configs.get(module)
-                if config:
-                    if isinstance(config, list):  # File multipli
-                        self.module_entries[module].delete(0, tk.END)
-                        self.module_entries[module].insert(0, "; ".join(config))
-                    else:  # Singolo file
-                        self.module_entries[module].delete(0, tk.END)
-                        self.module_entries[module].insert(0, config)
-            
-            self.update_status(f"Configurazione importata da {filename}")
-            messagebox.showinfo("Successo", "Configurazione importata correttamente!")
-
+            self.update_status("Configuration imported successfully")
+            messagebox.showinfo("Success", "Configuration imported successfully!")
+            self.load_config_structure()
+            self.refresh_current_view()
         except Exception as e:
-            self.update_status("Errore durante l'importazione")
-            messagebox.showerror("Errore", f"Importazione fallita:\n{str(e)}")
+            messagebox.showerror("Import Error", f"Failed to import configuration:\n{e}")
+            self.update_status("Import failed")
+
+
+    def refresh_current_view(self):
+        if hasattr(self, "current_section"):
+            if self.current_section == "packages":
+                self.show_packages()
+            elif self.current_section == "services":
+                self.show_services()
+            elif self.current_section == "environment":
+                self.show_environment()
+        else:
+            self.show_packages()
 
     def export_config(self):
-        """Esporta la configurazione corrente"""
+        filepath = filedialog.asksaveasfilename(
+            title="Export Configuration",
+            defaultextension=".tar",
+            filetypes=[("Tar archives", "*.tar")]
+        )
+        if not filepath:
+            return
+
         try:
-            # Prima verifichiamo che tutte le configurazioni siano selezionate
-            for module in self.manager.modules:
-                if not self.manager.selected_configs.get(module):
-                    messagebox.showwarning("Attenzione", f"Selezionare un file di configurazione per {module.__class__.__name__} prima di esportare!")
-                    return
+            with tarfile.open(filepath, "w") as tar:
+                base_dir = self.config_path
+                for root, dirs, files in os.walk(base_dir):
+                    for file in files:
+                        full_path = os.path.join(root, file)
+                        arcname = os.path.relpath(full_path, start=os.path.dirname(base_dir))
+                        tar.add(full_path, arcname=arcname)
 
-            filepath = filedialog.asksaveasfilename(
-                title="Salva configurazione",
-                defaultextension=".tar",
-                filetypes=[("Archivio configurazione", "*.tar"), ("Tutti i file", "*.*")]
-            )
-            if not filepath:
-                return
-
-            filename = os.path.basename(filepath)
-            self.update_status(f"Esportazione {filename} in corso...")
-            
-            self.manager.exportconfig(filepath)
-            
-            self.update_status(f"Configurazione esportata in {filename}")
-            messagebox.showinfo("Successo", "Configurazione esportata correttamente!")
-
+            self.update_status(f"Exported config to {os.path.basename(filepath)}")
+            messagebox.showinfo("Export Success", "Configuration exported successfully!")
         except Exception as e:
-            self.update_status("Errore durante l'esportazione")
-            messagebox.showerror("Errore", f"Esportazione fallita:\n{str(e)}")
+            messagebox.showerror("Export Error", f"Failed to export configuration:\n{e}")
+            self.update_status("Export failed")
+
+    def apply_configs(self):
+        if hasattr(self, "package_vars") and self.package_vars:
+            self.selected_packages = {cfg for cfg, var in self.package_vars.items() if var.get()}
+        if hasattr(self, "service_vars") and self.service_vars:
+            self.selected_services = {cfg for cfg, var in self.service_vars.items() if var.get()}
+        if hasattr(self, "env_var"):
+            self.selected_env = self.env_var.get()
+
+        if self.env_configs and not self.selected_env:
+            messagebox.showwarning("Warning", "Please select an environment configuration!")
+            self.update_status("Environment not selected")
+            return
+
+        try:
+            paths = {
+                "packages": [os.path.join(self.config_path, "packages", f) for f in self.selected_packages],
+                "services": [os.path.join(self.config_path, "services", f) for f in self.selected_services],
+                "environment": os.path.join(self.config_path, "environment", self.selected_env) if self.selected_env else None
+            }
+            for mod in self.manager.modules:
+                cls_name = type(mod).__name__
+                if cls_name == "PackagesLogic":
+                    self.manager.selected_configs[mod] = paths["packages"]
+                elif cls_name == "ServicesLogic":
+                    self.manager.selected_configs[mod] = paths["services"]
+                elif cls_name == "EnvironmentLogic":
+                    self.manager.selected_configs[mod] = paths["environment"]
+
+            if self.manager.apply_configs():
+                self.update_status("Configuration applied successfully")
+                messagebox.showinfo("Success", "Configuration applied successfully!")
+                if hasattr(self.controller, "main") and hasattr(self.controller.main, "runconfig"):
+                    self.controller.main.runconfig()
+            else:
+                self.update_status("Some configurations not applied properly")
+                messagebox.showwarning("Warning", "Some configurations may not have been applied.")
+        except Exception as e:
+            messagebox.showerror("Apply Error", f"Failed to apply configuration:\n{e}")
+            self.update_status("Failed to apply configuration")

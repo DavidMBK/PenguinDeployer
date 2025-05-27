@@ -26,7 +26,6 @@ class EnvironmentLogic(Module):
             subprocess.run(["./src/scripts/expimp_gconfigs.sh", "imp", self.gconfigs_filename], check=True)
 
     def conf_export(self, filepath):
-        """Export configuration to specified filepath"""
         try:
             self.gconfigs_filename = f"{os.path.splitext(os.path.basename(filepath))[0]}_gconfigs.config"
 
@@ -44,7 +43,6 @@ class EnvironmentLogic(Module):
             raise Exception(f"Export failed: {str(e)}")
 
     def conf_import(self, filepath):
-        """Import configuration from specified filepath"""
         try:
             with open(filepath, 'r') as conf:
                 for line in conf:
@@ -69,3 +67,14 @@ class EnvironmentLogic(Module):
 
     def configure(self):
         self.set_env_configs()
+
+
+e = EnvironmentLogic("configs/environment")
+
+e.conf_import("prova.config")
+
+e.conf_export("prova.config")
+
+e.configure()
+
+

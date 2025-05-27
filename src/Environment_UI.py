@@ -5,6 +5,7 @@ from environment import EnvironmentLogic
 
 class EnvironmentUI(tk.Frame):
     def __init__(self, parent, controller, config_folder):
+
         super().__init__(parent)
         self.controller = controller
         self.manager = EnvironmentLogic(config_folder)

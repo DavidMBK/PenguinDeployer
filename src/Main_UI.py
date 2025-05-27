@@ -2,13 +2,14 @@ import tkinter as tk
 from Logger_UI import LoginFrame
 from Mainwindow_UI import Mainwindow
 
+
 class MainUI:
 
     def __init__(self, main):
 
         self.main = main
 
-        # Costruzione basica del frame, [Devo farla dinamica?]
+        # Creazione della root
         self.root = tk.Tk()
         self.root.title("PenguinDeployer")
 

@@ -22,10 +22,8 @@ class Main:
         #inizialliza l'UI principale
         self.mainUI = MainUI(self)
 
-    def main(self):
-        pass
-
     def runconfig(self):
+        #fai partire la configurazione
 
         self.pack.configure()
         self.service.configure()
@@ -35,4 +33,3 @@ class Main:
 
 if __name__=="__main__":
     m = Main()
-    m.main()

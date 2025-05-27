@@ -7,15 +7,16 @@ import os
 class ServicesLogic(Module):
 
     def __init__(self, nconfigfolder):
+        #inizializzazione
         super().__init__(nconfigfolder)
 
-        self.to_enable = []
-        self.to_disable = []
+        self.to_enable = [] #lista dei servizi da abilitare
+        self.to_disable = [] #lista dei servizi da disabilitare
 
-        self.is_multi_import = True
+        self.is_multi_import = True #flag per segnare che la classe importa più di un file alla volta
 
     def service_onoff(self, service: str, enable: bool):
-        #attiva o disattiva un servizio
+        # attiva o disattiva un servizio
 
         if enable:
             run = ["./src/scripts/service_onoff.sh"] + ["enable"] + [service]
@@ -23,12 +24,6 @@ class ServicesLogic(Module):
             run = ["./src/scripts/service_onoff.sh"] + ["disable"] + [service]
 
         subprocess.call(run)
-
-    def sys_read(self):
-        path = ["./systemctl.sh"]
-        result = subprocess.run(path, capture_output=True, text=True)
-
-        return result.stdout
 
     def conf_export(self, filename):
 
@@ -57,6 +52,7 @@ class ServicesLogic(Module):
             i += 2
 
     def conf_import_multiple(self, filenames):
+        # importa uno o più file
 
         self.to_enable = []
         self.to_disable = []
@@ -65,6 +61,7 @@ class ServicesLogic(Module):
             self.conf_import(filename)
 
     def configure(self):
+        # abilita e disabilita i servizzi
 
         for service in self.to_enable:
             self.service_onoff(service, True)
@@ -82,18 +79,3 @@ class ServicesLogic(Module):
         matches = [m.strip() for m in result.stdout.strip().split("\n") if m.strip()]
         matches = [m.replace(".service", "") if m.endswith(".service") else m for m in matches]
         return matches
-
-
-"""
-if __name__ == "__main__":
-    s = Services(src/configs/services)
-
-    #testing import
-    s.conf_import("testconfig.config")
-
-    #testing export
-    s.conf_export("testconfigexp.config")
-
-    #testing configuration (install/uninstall)
-    s.configure()
-"""

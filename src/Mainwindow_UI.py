@@ -64,7 +64,6 @@ class Mainwindow(tk.Frame):
         self.apply.pack(side=tk.BOTTOM, pady=10)
 
         # Puoi caricare un frame di default, ad esempio PackagesUI
-
         self.show_frame("PackagesUI")
 
     def show_frame(self, frame_name):

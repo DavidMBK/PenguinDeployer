@@ -5,16 +5,16 @@ from Module import Module
 
 
 class PackagesLogic(Module):
-    def __init__(self,nconfigfolder):
+    def __init__(self, nconfigfolder):
         super().__init__(nconfigfolder)
 
-        self.to_install: list[str] = []
-        self.to_uninstall: list[str] = []
+        self.to_install: list[str] = []  # lista dei pacchetti da installare
+        self.to_uninstall: list[str] = []  # lista dei pacchetti da disinstallare
 
-        self.is_multi_import = True
+        self.is_multi_import = True  # flag per segnare che la classe importa più di un file alla volta
 
     def install_packages(self):
-        #esegui lo script per installare i pacchetti
+        # esegui lo script per installare i pacchetti
         run = ["./src/scripts/install.sh"] + self.to_install
         subprocess.call(run)
 
@@ -22,10 +22,6 @@ class PackagesLogic(Module):
         # esegui lo script per disnstallare i pacchetti
         run = ["./src/scripts/uninstall.sh"] + self.to_uninstall
         subprocess.call(run)
-
-    def sys_read(self):
-        #aggiungere
-        pass
 
     def conf_export(self, filename):
 
@@ -55,7 +51,6 @@ class PackagesLogic(Module):
                 print("Errore nel file di configurazione")
             i += 2
 
-
     def conf_import_multiple(self, filenames):
 
         self.to_install = []
@@ -64,12 +59,11 @@ class PackagesLogic(Module):
         for filename in filenames:
             self.conf_import(filename)
 
-
     def configure(self):
 
         self.install_packages()
         self.unistall_packages()
-    
+
     def prova(self):
         print(f'installati: {self.to_install}')
         print(f'Disinstallati: {self.to_uninstall}')
@@ -79,17 +73,3 @@ class PackagesLogic(Module):
         result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
         return matches
-
-'''
-if __name__ == "__main__":
-    p = Packages(src/configs/packages)
-    
-    #testing import
-    p.conf_import("testconfig.config")
-    
-    #testing export
-    p.conf_export("testconfigexp.config")
-    
-    #testing configuration (install/uninstall)
-    p.configure()
-'''

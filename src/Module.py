@@ -1,25 +1,21 @@
 
-#classe base per i moduli, fatta per essere inheritata e non instanziata di per se.
-class Module:
 
-    configfolder: str
-    modulename: str
+class Module:
+    # classe base per i moduli, fatta per essere inheritata e non instanziata di per se.
+
+    configfolder: str # cartella che contiene le configurazioni del modulo
 
     def __init__(self, nconfigfolder):
         self.configfolder = nconfigfolder
 
-    def sys_read(self):
-        #funzione per leggere le impostazioni attuali del sistema
-        pass
-
     def conf_export(self, filename):
-        #funzione per esportare le configurazioni a un file
+        # funzione per esportare le configurazioni a un file
         pass
 
     def conf_import(self, filename):
-        #funzione per importare le configurazioni da un file
+        # funzione per importare le configurazioni da un file
         pass
 
     def configure(self):
-        #funzione per fare partile la configurazione del sistema
+        # funzione per applicare le configurazioni scelte
         pass

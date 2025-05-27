@@ -2,24 +2,24 @@ import subprocess
 import os
 from Module import Module
 
+
 class EnvironmentLogic(Module):
     def __init__(self, nconfigfolder):
         super().__init__(nconfigfolder)
-        self.shell = ""
-        self.editor = ""
-        self.prompt = ""
-        self.hostname = ""
-        self.gconfigs = False
-        self.gconfigs_filename = ""
-        self.configfolder = os.path.abspath(nconfigfolder)
+
+        self.shell = ""  # nome della shell da impostare
+        self.editor = ""  # nome dell'editor da impostare
+        self.prompt = ""  # stringa del prompt da impostare
+        self.hostname = ""  # hostname da impostare
+        self.gconfigs = False  # flag per decidere se importare/esportare/applicare le impostazioni di gnome
+        self.gconfigs_filename = ""  # nome del file su cui le configurazioni di gnome sono salvate
 
     def debug(self, message):
         print(f"\033[94m[DEBUG]\033[0m {message}")  # Blu
 
-    def sys_read(self):
-        pass
-
     def set_env_configs(self):
+        # imposta le configurazioni di ambiente in base alle variabili
+
         if self.shell:
             self.debug(f"Cambio shell: {self.shell}")
             subprocess.run(["./src/scripts/change_shell.sh", self.shell], check=True)
@@ -61,9 +61,6 @@ class EnvironmentLogic(Module):
 
         self.gconfigs_filename = os.path.join(self.configfolder, base_name + "gnco.txt")
 
-        #self.debug(f"Esportazione configurazione in: {full_config_path}")
-        #self.debug(f"File Gnome configs: {self.gconfigs_filename}")
-
         with open(full_config_path, 'w') as confexp:
             confexp.write("shell:" + self.shell)
             confexp.write("\neditor:" + self.editor)
@@ -73,12 +70,10 @@ class EnvironmentLogic(Module):
             confexp.write("\n" + self.prompt)
 
         if self.gconfigs:
-            #self.debug("Esportazione Gnome configs...")
             subprocess.run(["./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
 
     def conf_import(self, filename):
         full_config_path = os.path.join(self.configfolder, filename)
-        #self.debug(f"Import configurazione da: {full_config_path}")
 
         with open(full_config_path) as conf:
             self.shell = conf.readline().strip("\n").split(":", 1)[1]
@@ -88,24 +83,6 @@ class EnvironmentLogic(Module):
             self.gconfigs_filename = conf.readline().strip("\n").split(":", 1)[1]
             last_line = conf.readline()
             self.prompt = last_line.strip("\n") if last_line else ""
-        
-        '''
-        self.debug(f"Valori importati:\n"
-                   f"  Shell: {self.shell}\n"
-                   f"  Editor: {self.editor}\n"
-                   f"  Hostname: {self.hostname}\n"
-                   f"  Gnome Configs: {self.gconfigs}\n"
-                   f"  Gnome Configs Filename: {self.gconfigs_filename}\n"
-                   f"  Prompt: {self.prompt}")
-        '''
-    def configure(self):
-        #self.debug("Inizio procedura di configurazione...")
-        self.set_env_configs()
-        #self.debug("Configurazione completata.")
 
-'''
-e = EnvironmentLogic("src/configs/environment")
-e.conf_import("prova.config")
-e.conf_export("prova.config")
-e.configure()
-'''
+    def configure(self):
+        self.set_env_configs()

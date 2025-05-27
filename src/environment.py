@@ -57,10 +57,9 @@ class EnvironmentLogic(Module):
 
 e = EnvironmentLogic("src/configs/environment")
 
-e.conf_import("prova.config")
+e.conf_import("testconfig.config")
 
-e.conf_export("prova.config")
+e.conf_export("testconfig.config")
 
 e.configure()
-
 

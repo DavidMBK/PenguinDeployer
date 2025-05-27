@@ -28,7 +28,7 @@ class Mainwindow(tk.Frame):
         self.moduleframes = [
             PackagesUI(self.main_frame, self, self.main.pack),
             ServicesUI(self.main_frame, self, self.main.service),
-            EnvironmentUI(self.main_frame, self, self.main.environment),
+            EnvironmentUI(self.main_frame, self, self.main.environment.configfolder),
             QuickConfigUI(self.main_frame, self, self.main.quick) 
 
         ]  # aggiungere gli altri man mano

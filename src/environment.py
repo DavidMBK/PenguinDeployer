@@ -61,8 +61,8 @@ class EnvironmentLogic(Module):
 
         self.gconfigs_filename = os.path.join(self.configfolder, base_name + "gnco.txt")
 
-        self.debug(f"Esportazione configurazione in: {full_config_path}")
-        self.debug(f"File Gnome configs: {self.gconfigs_filename}")
+        #self.debug(f"Esportazione configurazione in: {full_config_path}")
+        #self.debug(f"File Gnome configs: {self.gconfigs_filename}")
 
         with open(full_config_path, 'w') as confexp:
             confexp.write("shell:" + self.shell)
@@ -73,12 +73,12 @@ class EnvironmentLogic(Module):
             confexp.write("\n" + self.prompt)
 
         if self.gconfigs:
-            self.debug("Esportazione Gnome configs...")
+            #self.debug("Esportazione Gnome configs...")
             subprocess.run(["./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
 
     def conf_import(self, filename):
         full_config_path = os.path.join(self.configfolder, filename)
-        self.debug(f"Import configurazione da: {full_config_path}")
+        #self.debug(f"Import configurazione da: {full_config_path}")
 
         with open(full_config_path) as conf:
             self.shell = conf.readline().strip("\n").split(":", 1)[1]
@@ -88,7 +88,8 @@ class EnvironmentLogic(Module):
             self.gconfigs_filename = conf.readline().strip("\n").split(":", 1)[1]
             last_line = conf.readline()
             self.prompt = last_line.strip("\n") if last_line else ""
-
+        
+        '''
         self.debug(f"Valori importati:\n"
                    f"  Shell: {self.shell}\n"
                    f"  Editor: {self.editor}\n"
@@ -96,13 +97,15 @@ class EnvironmentLogic(Module):
                    f"  Gnome Configs: {self.gconfigs}\n"
                    f"  Gnome Configs Filename: {self.gconfigs_filename}\n"
                    f"  Prompt: {self.prompt}")
-
+        '''
     def configure(self):
-        self.debug("Inizio procedura di configurazione...")
+        #self.debug("Inizio procedura di configurazione...")
         self.set_env_configs()
-        self.debug("Configurazione completata.")
+        #self.debug("Configurazione completata.")
 
+'''
 e = EnvironmentLogic("src/configs/environment")
 e.conf_import("prova.config")
 e.conf_export("prova.config")
 e.configure()
+'''

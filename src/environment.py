@@ -25,51 +25,37 @@ class EnvironmentLogic(Module):
         if self.gconfigs:
             subprocess.run(["./src/scripts/expimp_gconfigs.sh", "imp", self.gconfigs_filename], check=True)
 
-    def conf_export(self, filepath):
-        try:
-            self.gconfigs_filename = f"{os.path.splitext(os.path.basename(filepath))[0]}_gconfigs.config"
+    def conf_export(self, filename):
 
-            with open(filepath, 'w') as confexp:
-                confexp.write(f"shell:{self.shell}\n")
-                confexp.write(f"editor:{self.editor}\n")
-                confexp.write(f"hostname:{self.hostname}\n")
-                confexp.write(f"gconfigs:{str(self.gconfigs)}\n")
-                confexp.write(f"gconfigs_filename:{self.gconfigs_filename}\n")
-                confexp.write(f"prompt:{self.prompt}\n")
+        confexp = open(self.configfolder + "/" + filename, 'w')
 
-            if self.gconfigs:
-                subprocess.run(["./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
-        except Exception as e:
-            raise Exception(f"Export failed: {str(e)}")
+        confexp.write("shell:" + self.shell)
+        confexp.write("\neditor:" + self.editor)
+        confexp.write("\nhostname:" + self.hostname)
+        confexp.write("\ngconfigs:" + str(self.gconfigs))
+        confexp.write("\ngconfigs_filename:" + filename)
+        confexp.write("\n" + self.prompt)
 
-    def conf_import(self, filepath):
-        try:
-            with open(filepath, 'r') as conf:
-                for line in conf:
-                    line = line.strip()
-                    if not line or ":" not in line:
-                        continue
-                    key, value = line.split(":", 1)
-                    if key == "shell":
-                        self.shell = value
-                    elif key == "editor":
-                        self.editor = value
-                    elif key == "hostname":
-                        self.hostname = value
-                    elif key == "gconfigs":
-                        self.gconfigs = value == "True"
-                    elif key == "gconfigs_filename":
-                        self.gconfigs_filename = value
-                    elif key == "prompt":
-                        self.prompt = value
-        except Exception as e:
-            raise Exception(f"Import failed: {str(e)}")
+        if self.gconfigs:
+            run = ["./src/scripts/expimp_gconfigs.sh"] + ["exp"] + [filename]
+
+    def conf_import(self, filename):
+
+        conf = open(self.configfolder + "/" + filename)
+
+        self.shell = conf.readline().strip("\n").split(":")[1]
+        self.editor = conf.readline().strip("\n").split(":")[1]
+        self.hostname = conf.readline().strip("\n").split(":")[1]
+        self.gconfigs = "True" if (conf.readline().strip("\n").split(":")[1] == "True") else "False"
+        self.gconfigs_filename = conf.readline().strip("\n").split(":")[1]
+        self.prompt = conf.readline().strip("\n")
+
 
     def configure(self):
         self.set_env_configs()
 
 
-e = EnvironmentLogic("configs/environment")
+e = EnvironmentLogic("src/configs/environment")
 
 e.conf_import("prova.config")
 

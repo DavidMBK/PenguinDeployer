@@ -10,10 +10,10 @@ class ServicesLogic(Module):
         #inizializzazione
         super().__init__(nconfigfolder)
 
-        self.to_enable = [] #lista dei servizi da abilitare
-        self.to_disable = [] #lista dei servizi da disabilitare
+        self.to_enable = [] # lista dei servizi da abilitare
+        self.to_disable = [] # lista dei servizi da disabilitare
 
-        self.is_multi_import = True #flag per segnare che la classe importa più di un file alla volta
+        self.is_multi_import = True # flag per segnare che la classe importa più di un file alla volta
 
     def service_onoff(self, service: str, enable: bool):
         # attiva o disattiva un servizio

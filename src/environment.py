@@ -33,7 +33,7 @@ class EnvironmentLogic(Module):
         confexp.write("\neditor:" + self.editor)
         confexp.write("\nhostname:" + self.hostname)
         confexp.write("\ngconfigs:" + str(self.gconfigs))
-        confexp.write("\ngconfigs_filename:" + filename)
+        confexp.write("\ngconfigs_filename:" + filename + "gnco.txt")
         confexp.write("\n" + self.prompt)
 
         if self.gconfigs:

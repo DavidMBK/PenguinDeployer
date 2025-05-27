@@ -24,7 +24,7 @@ class QuickConfig():
         shutil.make_archive("export", "tar", here + "/configs")
 
         # mettilo nella cartella desiderata
-        shutil.move(exportpath, here + "/configs")
+        shutil.move(here + "/export.tar", exportpath)
 
     def apply_configs(self) -> bool:
         #funzione per applicare le configurazioni
@@ -48,11 +48,11 @@ class QuickConfig():
     #di import che non resetta
 
 
-'''
-q = QuickConfig()
 
-q.exportconfig("test")
+q = QuickConfig([])
+
+q.exportconfig(os.getcwd() + "/configs")
 
 print("\n" + os.getcwd())
-q.importconfig(os.getcwd() + "/test/export.tar")
-'''
+q.importconfig(os.getcwd() + "/configs/export.tar")
+

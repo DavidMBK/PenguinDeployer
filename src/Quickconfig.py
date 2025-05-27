@@ -1,9 +1,9 @@
 import os
 import shutil
+import tarfile
 
 
 class QuickConfig():
-
     selected_configs: dict
 
     def __init__(self, modules):
@@ -16,56 +16,20 @@ class QuickConfig():
             self.selected_configs[module] = ""
 
     def importconfig(self, to_import):
-        import tarfile
-
-        extract_temp_path = os.path.join(os.getcwd(), "temp_import_config")
-        os.makedirs(extract_temp_path, exist_ok=True)
-
-        # Pulisce prima il contenuto se già esiste
-        for f in os.listdir(extract_temp_path):
-            fpath = os.path.join(extract_temp_path, f)
-            if os.path.isdir(fpath):
-                shutil.rmtree(fpath)
-            else:
-                os.remove(fpath)
-
-        # Estrai in temp
-        with tarfile.open(to_import, "r") as tar:
-            tar.extractall(path=extract_temp_path)
-
-        # Sposta manualmente il contenuto da temp/configs/ a ./configs/
-        src_config_dir = os.path.join(extract_temp_path, "configs")
-        dest_config_dir = os.path.join(os.getcwd(), "configs")
-
-        for item in os.listdir(src_config_dir):
-            src_path = os.path.join(src_config_dir, item)
-            dest_path = os.path.join(dest_config_dir, item)
-
-            if os.path.isdir(src_path):
-                if os.path.exists(dest_path):
-                    shutil.rmtree(dest_path)
-                shutil.copytree(src_path, dest_path)
-            else:
-                shutil.copy2(src_path, dest_path)
-
-        shutil.rmtree(extract_temp_path)  # Cleanup
-
+        shutil.unpack_archive(to_import, os.getcwd() + "/configs", "tar")
 
     def exportconfig(self, exportpath):
-        #esporta le configurazioni
-
-        #crea un archivio tar
 
         here = os.getcwd()
         shutil.make_archive("export", "tar", here + "/configs")
 
-        #mettilo nella cartella desirata
-        shutil.move(here + "/export.tar", exportpath)
+        # mettilo nella cartella desiderata
+        shutil.move(exportpath, here + "/configs")
 
     def apply_configs(self) -> bool:
         #funzione per applicare le configurazioni
         #ritorna 0 se non tutti i moduli sono stati selezionati, 1 se invece le impostazioni sono state applicate
-        
+
         #controlla se per ogni modulo e stata selezionata una configurazione
         for module in self.selected_configs.keys():
             if self.selected_configs[module] == "":

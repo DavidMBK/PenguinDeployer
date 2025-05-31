@@ -26,7 +26,7 @@ class QuickConfig:
     def exportconfig(self, exportpath, exportname):
         # esporta le configurazioni ad un file tar
 
-        run = ["./src/scripts/conftotar.sh"] + [exportname] + [exportpath] + [os.getcwd() + "/configs"]
+        run = ["./src/scripts/conftotar.sh"] + [exportname] + [exportpath] + [os.getcwd()] + ["configs"]
         subprocess.call(run)
 
     def apply_configs(self) -> bool:

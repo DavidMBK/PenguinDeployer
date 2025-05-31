@@ -195,41 +195,14 @@ class QuickConfigUI(tk.Frame):
         self.manager.exportconfig(filepath,pathlib.Path(filepath).name)
 
     def apply_configs(self):
-        if hasattr(self, "package_vars") and self.package_vars:
-            self.selected_packages = {cfg for cfg, var in self.package_vars.items() if var.get()}
-        if hasattr(self, "service_vars") and self.service_vars:
-            self.selected_services = {cfg for cfg, var in self.service_vars.items() if var.get()}
-        if hasattr(self, "env_var"):
-            self.selected_env = self.env_var.get()
 
-        if self.env_configs and not self.selected_env:
-            messagebox.showwarning("Warning", "Please select an environment configuration!")
-            self.update_status("Environment not selected")
-            return
+        selected_configs = {
+            "packages": list(self.selected_packages),
+            "services": list(self.selected_services),
+            "environment": self.selected_env
+        }
 
-        try:
-            paths = {
-                "packages": [os.path.join(self.config_path, "packages", f) for f in self.selected_packages],
-                "services": [os.path.join(self.config_path, "services", f) for f in self.selected_services],
-                "environment": os.path.join(self.config_path, "environment", self.selected_env) if self.selected_env else None
-            }
-            for mod in self.manager.modules:
-                cls_name = type(mod).__name__
-                if cls_name == "PackagesLogic":
-                    self.manager.selected_configs[mod] = paths["packages"]
-                elif cls_name == "ServicesLogic":
-                    self.manager.selected_configs[mod] = paths["services"]
-                elif cls_name == "EnvironmentLogic":
-                    self.manager.selected_configs[mod] = paths["environment"]
+        for module in self.manager.selected_configs.keys():
+            self.manager.selected_configs[module] = selected_configs[module.name]
 
-            if self.manager.apply_configs():
-                self.update_status("Configuration applied successfully")
-                messagebox.showinfo("Success", "Configuration applied successfully!")
-                if hasattr(self.controller, "main") and hasattr(self.controller.main, "runconfig"):
-                    self.controller.main.runconfig()
-            else:
-                self.update_status("Some configurations not applied properly")
-                messagebox.showwarning("Warning", "Some configurations may not have been applied.")
-        except Exception as e:
-            messagebox.showerror("Apply Error", f"Failed to apply configuration:\n{e}")
-            self.update_status("Failed to apply configuration")
+        self.manager.apply_configs()

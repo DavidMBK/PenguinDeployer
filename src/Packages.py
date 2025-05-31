@@ -10,6 +10,7 @@ class PackagesLogic(Module):
 
         self.to_install: list[str] = []  # lista dei pacchetti da installare
         self.to_uninstall: list[str] = []  # lista dei pacchetti da disinstallare
+        self.mname = "packages"
 
         self.is_multi_import = True  # flag per segnare che la classe importa più di un file alla volta
 

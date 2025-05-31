@@ -14,6 +14,8 @@ class EnvironmentLogic(Module):
         self.gconfigs = False  # flag per decidere se importare/esportare/applicare le impostazioni di gnome
         self.gconfigs_filename = ""  # nome del file su cui le configurazioni di gnome sono salvate
 
+        self.mname = "environment"
+
     def debug(self, message):
         print(f"\033[94m[DEBUG]\033[0m {message}")  # Blu
 

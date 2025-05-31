@@ -12,6 +12,7 @@ class ServicesLogic(Module):
 
         self.to_enable = [] # lista dei servizi da abilitare
         self.to_disable = [] # lista dei servizi da disabilitare
+        self.mname = "services"
 
         self.is_multi_import = True # flag per segnare che la classe importa più di un file alla volta
 

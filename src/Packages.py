@@ -38,7 +38,6 @@ class PackagesLogic(Module):
         conf = open(self.configfolder + "/" + filename)
         packages = conf.read()
         psplit = re.split(':|\n', packages)
-
         psplit = list(filter(None, psplit))
 
         i = 0

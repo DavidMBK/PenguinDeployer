@@ -1,3 +1,4 @@
+import pathlib
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
@@ -214,7 +215,7 @@ class ServicesUI(tk.Frame):
         if not filepath:
             return  # Utente ha annullato
 
-        self.manager.conf_export(filepath)
+        self.manager.conf_export(pathlib.Path(filepath).name)
         messagebox.showinfo("Esportazione completata", f"Configurazione esportata in:\n{filepath}")
     
     def Import(self):
@@ -234,7 +235,7 @@ class ServicesUI(tk.Frame):
         self.selected_service = None
 
         # Importa la configurazione
-        self.manager.conf_import(filepath)
+        self.manager.conf_import_multiple([pathlib.Path(filepath).name])
 
         # Unisci i pacchetti da installare e disinstallare
         all_services = set(self.manager.to_enable + self.manager.to_disable)

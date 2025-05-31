@@ -40,6 +40,7 @@ class ServicesLogic(Module):
         conf = open(self.configfolder + "/" + filename)
         services = conf.read()
         ssplit = re.split(':|\n', services)
+        ssplit = list(filter(None, ssplit))
 
         i = 0
         while i < len(ssplit):

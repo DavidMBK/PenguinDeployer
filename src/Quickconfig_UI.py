@@ -203,6 +203,6 @@ class QuickConfigUI(tk.Frame):
         }
 
         for module in self.manager.selected_configs.keys():
-            self.manager.selected_configs[module] = selected_configs[module.name]
+            self.manager.selected_configs[module] = selected_configs[module.mname]
 
         self.manager.apply_configs()

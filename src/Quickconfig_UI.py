@@ -186,8 +186,8 @@ class QuickConfigUI(tk.Frame):
     def export_config(self):
         filepath = filedialog.asksaveasfilename(
             title="Export Configuration",
-            defaultextension=".tar",
-            filetypes=[("Tar archives", "*.tar")]
+            defaultextension=".tar.gz",
+            filetypes=[("Tar archives", "*.tar.gz")]
         )
         if not filepath:
             return

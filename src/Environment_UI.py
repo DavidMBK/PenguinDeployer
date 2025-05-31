@@ -56,6 +56,8 @@ class EnvironmentUI(tk.Frame):
         btn_frame.pack(fill=tk.X, pady=10)
         tk.Button(btn_frame, text="Importa", command=self.import_config).pack(side=tk.LEFT, padx=5)
         tk.Button(btn_frame, text="Esporta", command=self.export_config).pack(side=tk.LEFT, padx=5)
+        tk.Button(btn_frame, text="Aggiorna", command=self.refresh_from_manager).pack(side=tk.LEFT, padx=5)
+        
         
         self.status_var = tk.StringVar()
         self.status_bar = tk.Label(self.main_frame, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W)
@@ -144,3 +146,14 @@ class EnvironmentUI(tk.Frame):
         except Exception as e:
             self.update_status("Errore durante l'esportazione")
             messagebox.showerror("Errore", f"Esportazione fallita:\n{str(e)}")
+
+    def refresh_from_manager(self):
+        self.set_current_values({
+            "shell": self.manager.shell,
+            "editor": self.manager.editor,
+            "prompt": self.manager.prompt,
+            "hostname": self.manager.hostname,
+            "gconfigs": self.manager.gconfigs
+        })
+        print(self.manager.shell)
+        print("TEST")

@@ -20,7 +20,7 @@ class QuickConfig:
     def importconfig(self, to_import):
         # importa un file tar con le configurazioni
 
-        run = ["./src/scripts/tartoconf.sh"] + [to_import] + [os.getcwd()]
+        run = ["./src/scripts/tartoconf.sh"] + [to_import] + [os.getcwd()] + [os.getcwd() + "/src/configs"]
         subprocess.call(run)
 
     def exportconfig(self, exportpath, exportname):

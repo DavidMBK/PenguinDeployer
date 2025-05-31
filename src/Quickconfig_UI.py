@@ -1,5 +1,5 @@
 import os
-import shutil
+import pathlib
 import tarfile
 import tkinter as tk
 from tkinter import messagebox, filedialog, ttk
@@ -162,7 +162,7 @@ class QuickConfigUI(tk.Frame):
             return  # Utente ha annullato
 
         try:
-            self.manager.importconfig(filepath)
+            self.manager.importconfig(pathlib.Path(filepath).name)
             self.update_status("Configuration imported successfully")
             messagebox.showinfo("Success", "Configuration imported successfully!")
             self.load_config_structure()
@@ -192,20 +192,7 @@ class QuickConfigUI(tk.Frame):
         if not filepath:
             return
 
-        try:
-            with tarfile.open(filepath, "w") as tar:
-                base_dir = self.config_path
-                for root, dirs, files in os.walk(base_dir):
-                    for file in files:
-                        full_path = os.path.join(root, file)
-                        arcname = os.path.relpath(full_path, start=os.path.dirname(base_dir))
-                        tar.add(full_path, arcname=arcname)
-
-            self.update_status(f"Exported config to {os.path.basename(filepath)}")
-            messagebox.showinfo("Export Success", "Configuration exported successfully!")
-        except Exception as e:
-            messagebox.showerror("Export Error", f"Failed to export configuration:\n{e}")
-            self.update_status("Export failed")
+        self.manager.exportconfig(filepath)
 
     def apply_configs(self):
         if hasattr(self, "package_vars") and self.package_vars:

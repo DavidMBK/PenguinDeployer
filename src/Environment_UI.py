@@ -88,6 +88,7 @@ class EnvironmentUI(tk.Frame):
         try:
             filepath = filedialog.askopenfilename(
                 title="Seleziona file configurazione",
+                initialdir=os.path.join(os.path.dirname(__file__), "configs", "environment"),
                 filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
             )
             if not filepath:
@@ -119,6 +120,7 @@ class EnvironmentUI(tk.Frame):
 
             filepath = filedialog.asksaveasfilename(
                 title="Salva configurazione",
+                initialdir=os.path.join(os.path.dirname(__file__), "configs", "environment"),
                 defaultextension=".config",
                 filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
             )

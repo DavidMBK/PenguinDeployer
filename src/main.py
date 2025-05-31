@@ -27,6 +27,7 @@ class Main:
 
         self.pack.configure()
         self.service.configure()
+        self.environment.configure()
 
         print("Configurazione completata")
 

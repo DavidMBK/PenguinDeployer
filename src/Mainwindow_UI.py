@@ -83,8 +83,7 @@ class Mainwindow(tk.Frame):
     def Applychanges(self):
         response = messagebox.askquestion("Confirm Changes", "Do you want to apply the changes?")
         if response == "yes":
-            print("configurazione")
-            #self.main.runconfig()
+            self.main.runconfig()
         elif response == "no":
             return
 

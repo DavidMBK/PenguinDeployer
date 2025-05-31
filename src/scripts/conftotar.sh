@@ -1,5 +1,4 @@
 #!/bin/bash
 
-cd "$3"
-tar -czvf "$1""$4"
+tar -czf "$1" -C "$3" "$4"
 mv "$1" "$2"

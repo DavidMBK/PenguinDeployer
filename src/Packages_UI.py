@@ -250,3 +250,19 @@ class PackagesUI(tk.Frame):
             self.add_package_row(pkg)
 
         messagebox.showinfo("Importazione completata", f"Configurazione importata da:\n{filepath}")
+
+    def refresh_from_manager(self):
+        # Pulisci solo la UI, NON lo stato del manager
+        for widget in self.scrollable_frame.winfo_children():
+            widget.destroy()
+
+        self.package_states.clear()
+        self.selected_package = None
+
+        # Ricarica dalla memoria (self.manager.* già aggiornati da fuori)
+        all_packages = set(self.manager.to_install + self.manager.to_uninstall)
+
+        for pkg in all_packages:
+            is_installed = pkg in self.manager.to_install
+            self.package_states[pkg] = is_installed
+            self.add_package_row(pkg)

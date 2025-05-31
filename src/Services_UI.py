@@ -250,3 +250,18 @@ class ServicesUI(tk.Frame):
             self.add_service_row(pkg)
 
         messagebox.showinfo("Importazione completata", f"Configurazione importata da:\n{filepath}")
+
+    def refresh_from_manager(self):
+        # Pulisci lo stato attuale della UI, ma NON toccare il manager!
+        for widget in self.scrollable_frame.winfo_children():
+            widget.destroy()
+        self.service_states.clear()
+        self.selected_service = None
+
+        # Ricarica dalla memoria del manager
+        all_services = set(self.manager.to_enable + self.manager.to_disable)
+
+        for pkg in all_services:
+            is_installed = pkg in self.manager.to_enable
+            self.service_states[pkg] = is_installed
+            self.add_service_row(pkg)

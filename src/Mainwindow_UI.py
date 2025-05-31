@@ -77,6 +77,9 @@ class Mainwindow(tk.Frame):
         for frame in self.moduleframes:
             if frame.__class__.__name__ == frame_name:
                 self.current_frame = frame
+                if frame_name == "EnvironmentUI" or frame_name == "PackagesUI" or frame_name == "ServicesUI":
+                    self.current_frame.refresh_from_manager()
+                    
                 self.current_frame.pack(fill=tk.BOTH, expand=True)
                 return
 

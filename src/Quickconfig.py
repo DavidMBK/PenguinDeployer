@@ -47,7 +47,5 @@ class QuickConfig:
                 module.conf_import(self.selected_configs[module])
             
             #print(module)
-        
 
         return True
-

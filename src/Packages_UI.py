@@ -9,12 +9,12 @@ import pathlib
 from Packages import PackagesLogic  # importa la classe logica
 
 class PackagesUI(tk.Frame):
-    def __init__(self, parent, controller, pack):
+    def __init__(self, parent, controller, config_folder, pack_manager=None):
         super().__init__(parent)
         self.controller = controller
-
+        self.manager = pack_manager if pack_manager else PackagesLogic(config_folder)
         self.package_states = {}
-        self.manager = pack
+
         self.selected_package = None  # Pacchetto selezionato
 
         # Top frame

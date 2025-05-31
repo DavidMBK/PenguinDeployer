@@ -20,7 +20,7 @@ class Main:
         self.quick = QuickConfig([self.pack, self.service, self.environment])
 
         #inizialliza l'UI principale
-        self.mainUI = MainUI(self)
+        self.mainUI = MainUI(self, self.environment, self.pack, self.service)
 
     def runconfig(self):
         #fai partire la configurazione

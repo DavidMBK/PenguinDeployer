@@ -13,10 +13,13 @@ from Quickconfig_UI import QuickConfigUI
 # ecc.
 
 class Mainwindow(tk.Frame):
-    def __init__(self, parent, controller, main):
+    def __init__(self, parent, controller, main, env_manager=None, service_manager = None, pack_manager=None):
         super().__init__(parent)
         self.controller = controller
         self.main = main
+        self.env_manager = env_manager
+        self.service_manager = service_manager
+        self.pack_manager = pack_manager
 
         self.sidebar = tk.Frame(self, pady=4, padx=4)
         self.sidebar.pack(fill=tk.BOTH, side=tk.LEFT)
@@ -26,9 +29,9 @@ class Mainwindow(tk.Frame):
         self.main_frame.pack(expand=True, fill=tk.BOTH, side=tk.RIGHT)
 
         self.moduleframes = [
-            PackagesUI(self.main_frame, self, self.main.pack),
-            ServicesUI(self.main_frame, self, self.main.service),
-            EnvironmentUI(self.main_frame, self, self.main.environment.configfolder),
+            PackagesUI(self.main_frame, self, self.main.pack, self.service_manager),
+            ServicesUI(self.main_frame, self, self.main.service, self.pack_manager),
+            EnvironmentUI(self.main_frame, self, self.main.environment.configfolder, self.env_manager),
             QuickConfigUI(self.main_frame, self, self.main.quick) 
 
         ]  # aggiungere gli altri man mano

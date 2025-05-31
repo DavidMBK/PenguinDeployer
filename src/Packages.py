@@ -79,3 +79,4 @@ class PackagesLogic(Module):
 
     def __str__(self):
         return f"PackagesLogic(to_install={self.to_install}, to_uninstall={self.to_uninstall})"
+    

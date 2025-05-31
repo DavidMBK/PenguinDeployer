@@ -84,3 +84,4 @@ class ServicesLogic(Module):
 
     def __str__(self):
         return f"ServicesLogic(configfolder={self.configfolder}, to_enable={self.to_enable}, to_disable={self.to_disable})"
+

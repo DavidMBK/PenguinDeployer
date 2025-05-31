@@ -98,3 +98,4 @@ class EnvironmentLogic(Module):
                f"Hostname: {self.hostname}\n" \
                f"Gnome Configs Enabled: {self.gconfigs}\n" \
                f"Gnome Configs Filename: {self.gconfigs_filename}"
+

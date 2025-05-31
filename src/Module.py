@@ -20,3 +20,4 @@ class Module:
     def configure(self):
         # funzione per applicare le configurazioni scelte
         pass
+

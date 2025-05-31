@@ -7,12 +7,13 @@ from tkinter import filedialog
 from Services import ServicesLogic  # importa la classe logica
 
 class ServicesUI(tk.Frame):
-    def __init__(self, parent, controller, service):
+    def __init__(self, parent, controller, config_folder, service_manager=None):
         super().__init__(parent)
         self.controller = controller
+        self.manager = service_manager if service_manager else ServicesLogic(config_folder)
 
         self.service_states = {}
-        self.manager = service
+
         self.selected_service = None  # servizio selezionato
 
         # Top frame

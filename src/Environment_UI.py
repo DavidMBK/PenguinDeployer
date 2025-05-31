@@ -4,11 +4,11 @@ import os
 from environment import EnvironmentLogic
 
 class EnvironmentUI(tk.Frame):
-    def __init__(self, parent, controller, config_folder):
+    def __init__(self, parent, controller, config_folder, env_manager=None):
 
         super().__init__(parent)
         self.controller = controller
-        self.manager = EnvironmentLogic(config_folder)
+        self.manager = env_manager if env_manager else EnvironmentLogic(config_folder)
         
         self.main_frame = tk.Frame(self)
         self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
@@ -21,6 +21,7 @@ class EnvironmentUI(tk.Frame):
         ]
         
         self.entries = {}
+        #self.refresh_from_manager()
         
         for label_text, field_name in self.fields:
             frame = tk.Frame(self.main_frame)
@@ -56,7 +57,6 @@ class EnvironmentUI(tk.Frame):
         btn_frame.pack(fill=tk.X, pady=10)
         tk.Button(btn_frame, text="Importa", command=self.import_config).pack(side=tk.LEFT, padx=5)
         tk.Button(btn_frame, text="Esporta", command=self.export_config).pack(side=tk.LEFT, padx=5)
-        tk.Button(btn_frame, text="Aggiorna", command=self.refresh_from_manager).pack(side=tk.LEFT, padx=5)
         
         
         self.status_var = tk.StringVar()
@@ -155,5 +155,3 @@ class EnvironmentUI(tk.Frame):
             "hostname": self.manager.hostname,
             "gconfigs": self.manager.gconfigs
         })
-        print(self.manager.shell)
-        print("TEST")

@@ -5,9 +5,12 @@ from Mainwindow_UI import Mainwindow
 
 class MainUI:
 
-    def __init__(self, main):
+    def __init__(self, main, env_manager=None, pack_manager=None, service_manager=None):
 
         self.main = main
+        self.env_manager = env_manager
+        self.pack_manager = pack_manager
+        self.service_manager = service_manager
 
         # Creazione della root
         self.root = tk.Tk()
@@ -15,7 +18,7 @@ class MainUI:
 
         # Istanzio i frame, passando root, controller e modulo se necessario (self)
         loginf = LoginFrame(self.root, self, self.main.logger)
-        mainwindowf = Mainwindow(self.root, self, self.main)  # passa in input l'array di frame
+        mainwindowf = Mainwindow(self.root, self, self.main, self.env_manager, self.pack_manager, self.service_manager)  # passa in input l'array di frame
 
         # Lo salvo nel dizionario con chiave il nome della classe
         self.frames = {

@@ -40,12 +40,10 @@ class Login:
         subprocess.run(["sudo", "-v"])
 
     def keep_sudo_alive(self):
+
         while True:
             subprocess.run(["sudo", "-v"])
             time.sleep(60)  # Refresh every 60 seconds
-
-    # Start it as a daemon thread after login
-    threading.Thread(target=keep_sudo_alive, daemon=True).start()
 
     def adminlogin(self, username, password):
         # funzione principale per il log-in
@@ -56,7 +54,7 @@ class Login:
             if admin_check is True:
                 self.admin = True
                 self.sudo()
-                self.keep_sudo_alive()
+                threading.Thread(target=self.keep_sudo_alive, daemon=True).start()
                 return True, "Login Successful"
             else:
                 self.admin = False

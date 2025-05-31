@@ -89,3 +89,12 @@ class EnvironmentLogic(Module):
 
     def configure(self):
         self.set_env_configs()
+
+    def __str__(self):
+        return f"Environment Module: {self.mname}\n" \
+               f"Shell: {self.shell}\n" \
+               f"Editor: {self.editor}\n" \
+               f"Prompt: {self.prompt}\n" \
+               f"Hostname: {self.hostname}\n" \
+               f"Gnome Configs Enabled: {self.gconfigs}\n" \
+               f"Gnome Configs Filename: {self.gconfigs_filename}"

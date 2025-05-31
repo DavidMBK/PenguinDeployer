@@ -42,8 +42,12 @@ class QuickConfig:
         for module in self.modules:
             if module.is_multi_import:
                 module.conf_import_multiple(self.selected_configs[module])
+
             else:
                 module.conf_import(self.selected_configs[module])
+            
+            #print(module)
+        
 
         return True
 

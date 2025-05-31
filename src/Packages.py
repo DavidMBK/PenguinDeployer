@@ -76,3 +76,6 @@ class PackagesLogic(Module):
         result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
         return matches
+
+    def __str__(self):
+        return f"PackagesLogic(to_install={self.to_install}, to_uninstall={self.to_uninstall})"

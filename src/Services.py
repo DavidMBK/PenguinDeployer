@@ -81,3 +81,6 @@ class ServicesLogic(Module):
         matches = [m.strip() for m in result.stdout.strip().split("\n") if m.strip()]
         matches = [m.replace(".service", "") if m.endswith(".service") else m for m in matches]
         return matches
+
+    def __str__(self):
+        return f"ServicesLogic(configfolder={self.configfolder}, to_enable={self.to_enable}, to_disable={self.to_disable})"

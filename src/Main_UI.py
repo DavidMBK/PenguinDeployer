@@ -27,8 +27,8 @@ class MainUI:
         for FrameClass in self.frames.keys():
             self.frames[FrameClass].place(relwidth=1, relheight=1)
 
-        self.show_frame("LoginFrame")
-        #self.show_frame("Mainwindow")
+        #self.show_frame("LoginFrame")
+        self.show_frame("Mainwindow")
 
         self.root.mainloop()
 

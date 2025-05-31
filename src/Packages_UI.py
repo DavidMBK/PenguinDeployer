@@ -216,7 +216,7 @@ class PackagesUI(tk.Frame):
         if not filepath:
             return  # Utente ha annullato
 
-        self.manager.conf_export(filepath)
+        self.manager.conf_export(pathlib.Path(filepath).name)
         messagebox.showinfo("Esportazione completata", f"Configurazione esportata in:\n{filepath}")
 
     def Import(self):

@@ -61,7 +61,6 @@ class PackagesLogic(Module):
         for filename in filenames:
             self.conf_import(filename)
 
-        print("Hello")
 
     def configure(self):
 

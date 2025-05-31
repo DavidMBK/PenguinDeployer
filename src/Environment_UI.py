@@ -64,7 +64,8 @@ class EnvironmentUI(tk.Frame):
         self.status_bar.pack(fill=tk.X, pady=(10,0))
 
         
-        
+        self.auto_refresh_interval = 1000  # 1000 ms = 1 secondo
+        self.auto_refresh()
         self.update_status("Pronto")
 
     def update_status(self, message):
@@ -147,11 +148,23 @@ class EnvironmentUI(tk.Frame):
             self.update_status("Errore durante l'esportazione")
             messagebox.showerror("Errore", f"Esportazione fallita:\n{str(e)}")
 
+
+    def auto_refresh(self):
+        self.refresh_from_manager()
+        self.after(self.auto_refresh_interval, self.auto_refresh)
+
     def refresh_from_manager(self):
-        self.set_current_values({
+        current_values = self.get_current_values()
+        manager_values = {
             "shell": self.manager.shell,
             "editor": self.manager.editor,
             "prompt": self.manager.prompt,
             "hostname": self.manager.hostname,
             "gconfigs": self.manager.gconfigs
-        })
+        }
+        
+        # Controlla se i valori sono diversi
+        if any(current_values[key] != manager_values[key] for key in manager_values):
+            self.set_current_values(manager_values)
+            return True
+        return False

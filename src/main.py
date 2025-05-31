@@ -14,9 +14,9 @@ class Main:
         self.logger = Login()
 
         #inizializza i moduli
-        self.pack = PackagesLogic("src/configs/packages")
-        self.service = ServicesLogic("src/configs/services")
-        self.environment = EnvironmentLogic("src/configs/environment")
+        self.pack = PackagesLogic("configs/packages")
+        self.service = ServicesLogic("configs/services")
+        self.environment = EnvironmentLogic("configs/environment")
         self.quick = QuickConfig([self.pack, self.service, self.environment])
 
         #inizialliza l'UI principale

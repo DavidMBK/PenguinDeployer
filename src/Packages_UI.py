@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import subprocess
 from tkinter import filedialog
+import pathlib
 
 
 from Packages import PackagesLogic  # importa la classe logica
@@ -235,7 +236,7 @@ class PackagesUI(tk.Frame):
         self.selected_package = None
 
         # Importa la configurazione
-        self.manager.conf_import(filepath)
+        self.manager.conf_import_multiple([pathlib.Path(filepath).name])
 
         # Unisci i pacchetti da installare e disinstallare
         all_packages = set(self.manager.to_install + self.manager.to_uninstall)

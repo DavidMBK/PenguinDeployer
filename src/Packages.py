@@ -39,6 +39,8 @@ class PackagesLogic(Module):
         packages = conf.read()
         psplit = re.split(':|\n', packages)
 
+        psplit = list(filter(None, psplit))
+
         i = 0
         while i < len(psplit):
             if psplit[i + 1] == "install":
@@ -58,6 +60,8 @@ class PackagesLogic(Module):
 
         for filename in filenames:
             self.conf_import(filename)
+
+        print("Hello")
 
     def configure(self):
 

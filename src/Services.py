@@ -20,9 +20,9 @@ class ServicesLogic(Module):
         # attiva o disattiva un servizio
 
         if enable:
-            run = ["./src/scripts/service_onoff.sh"] + ["enable"] + [service]
+            run = ["sudo","./src/scripts/service_onoff.sh"] + ["enable"] + [service]
         else:
-            run = ["./src/scripts/service_onoff.sh"] + ["disable"] + [service]
+            run = ["sudo","./src/scripts/service_onoff.sh"] + ["disable"] + [service]
 
         subprocess.call(run)
 
@@ -76,7 +76,7 @@ class ServicesLogic(Module):
         print(f'Disabilitati: {self.to_disable}')
 
     def find_service(self, query):
-        comand = ["./src/scripts/systemctl.sh"] + [query]
+        comand = ["sudo","./src/scripts/systemctl.sh"] + [query]
         result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         matches = [m.strip() for m in result.stdout.strip().split("\n") if m.strip()]
         matches = [m.replace(".service", "") if m.endswith(".service") else m for m in matches]

@@ -25,31 +25,31 @@ class EnvironmentLogic(Module):
 
         if self.shell:
             self.debug(f"Cambio shell: {self.shell}")
-            subprocess.run(["./src/scripts/change_shell.sh", self.shell], check=True)
+            subprocess.run(["sudo","./src/scripts/change_shell.sh", self.shell], check=True)
         else:
             self.debug("Shell non specificata, salto.")
 
         if self.editor:
             self.debug(f"Cambio editor: {self.editor}")
-            subprocess.run(["./src/scripts/change_editor.sh", self.editor], check=True)
+            subprocess.run(["sudo","./src/scripts/change_editor.sh", self.editor], check=True)
         else:
             self.debug("Editor non specificato, salto.")
 
         if self.prompt:
             self.debug(f"Cambio prompt: {self.prompt}")
-            subprocess.run(["./src/scripts/change_prompt.sh", self.prompt], check=True)
+            subprocess.run(["sudo","./src/scripts/change_prompt.sh", self.prompt], check=True)
         else:
             self.debug("Prompt non specificato o vuoto, salto.")
 
         if self.hostname:
             self.debug(f"Cambio hostname: {self.hostname}")
-            subprocess.run(["./src/scripts/change_hostname.sh", self.hostname], check=True)
+            subprocess.run(["sudo","./src/scripts/change_hostname.sh", self.hostname], check=True)
         else:
             self.debug("Hostname non specificato, salto.")
 
         if self.gconfigs and self.gconfigs_filename:
             self.debug(f"Import Gnome configs da: {self.gconfigs_filename}")
-            subprocess.run(["./src/scripts/expimp_gconfigs.sh", "imp", self.gconfigs_filename], check=True)
+            subprocess.run(["sudo","./src/scripts/expimp_gconfigs.sh", "imp", self.gconfigs_filename], check=True)
         else:
             self.debug("Gnome configs non attivo o filename mancante, salto.")
 
@@ -73,7 +73,7 @@ class EnvironmentLogic(Module):
             confexp.write("\n" + self.prompt)
 
         if self.gconfigs:
-            subprocess.run(["./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
+            subprocess.run(["sudo","./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
 
     def conf_import(self, filename):
         full_config_path = os.path.join(self.configfolder, filename)

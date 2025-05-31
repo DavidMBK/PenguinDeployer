@@ -162,7 +162,7 @@ class QuickConfigUI(tk.Frame):
             return  # Utente ha annullato
 
         try:
-            self.manager.importconfig(pathlib.Path(filepath).name)
+            self.manager.importconfig(filepath)
             self.update_status("Configuration imported successfully")
             messagebox.showinfo("Success", "Configuration imported successfully!")
             self.load_config_structure()

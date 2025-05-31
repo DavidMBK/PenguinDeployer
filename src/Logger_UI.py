@@ -7,7 +7,7 @@ from Logger import Login
 class LoginFrame(tk.Frame):  # Impostare tk.Frame per avere il tk.raise per cambiare schermata nel main.
 
     def __init__(self, parent, controller,login):
-        super().__init__(parent, bg='white')
+        super().__init__(parent, bg='#d9d9d9')
         self.controller = controller
         self.login = login
 
@@ -15,11 +15,11 @@ class LoginFrame(tk.Frame):  # Impostare tk.Frame per avere il tk.raise per camb
         #self.img = tk.PhotoImage(file='src/images/login.png')
         #tk.Label(self,image=self.img,bg='white').place(x=50,y=50)
 
-        frame = tk.Frame(self, width=350, height=350, bg="white", bd=0, highlightthickness=0)
+        frame = tk.Frame(self, width=350, height=350, bg="#d9d9d9", bd=0, highlightthickness=0)
 
-        frame.place(x=480, y=70)
+        frame.place(x=290, y=70)
 
-        heading = tk.Label(frame, text='Sign in', fg='#57a1f8', bg='white',
+        heading = tk.Label(frame, text='Sign in', fg='black', bg='#d9d9d9',
                            font=('Microsoft YaHei UI Light', 23, 'normal'))
         heading.place(x=100, y=5)
 
@@ -30,7 +30,7 @@ class LoginFrame(tk.Frame):  # Impostare tk.Frame per avere il tk.raise per camb
             width=25,
             fg='black',
             border=0,
-            bg='white',
+            bg='#d9d9d9',
             font=('Microsoft YaHei UI Light', 11),
             highlightthickness=0,
             relief='flat'
@@ -49,7 +49,7 @@ class LoginFrame(tk.Frame):  # Impostare tk.Frame per avere il tk.raise per camb
             width=25,
             fg='black',
             border=0,
-            bg='white',
+            bg='#d9d9d9',
             font=('Microsoft YaHei UI Light', 11),
             highlightthickness=0,
             relief='flat',
@@ -64,16 +64,16 @@ class LoginFrame(tk.Frame):  # Impostare tk.Frame per avere il tk.raise per camb
 
         # buttone
 
-        tk.Button(frame, width=32, pady=7, text='Sign in', bg='#57a1f8', fg='white', border=0,
+        tk.Button(frame, width=32, pady=7, text='Sign in', bg='black', fg='#d9d9d9', border=0,
                   command=self.try_login).place(x=34, y=204)
 
         # Star now
 
-        label = tk.Label(frame, text="Love the project?", fg='black', bg='white',
+        label = tk.Label(frame, text="Love the project?", fg='black', bg='#d9d9d9',
                          font=('Microsoft YaHei UI Light', 9, 'normal'))
         label.place(x=75, y=270)
 
-        star_now = tk.Button(frame, width=6, text='Star now', border=0, bg='white', cursor='hand2', fg='#EAB308',
+        star_now = tk.Button(frame, width=6, text='Star now', border=0, bg='#d9d9d9', cursor='hand2', fg='#EAB308',
                              highlightthickness=0, relief='flat', command=self.GithubStar)
         star_now.place(x=172, y=263.5)
 

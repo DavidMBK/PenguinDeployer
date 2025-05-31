@@ -1,64 +1,59 @@
-import subprocess  # Per controllare i gruppi dell'utente
-import getpass  # Non mostra la password mentre la scrivi
-import pam  # Si interfaccia con il PAM per l'autenticazione
+import subprocess
+import pam
 import threading
 import time
-import subprocess
-
-# ! ATTENZIONE !#  USARE VENV.
 
 class Login:
-    # classe che si occupa del log-in
-
     def __init__(self):
-        # inizializza la classe
         self.username = ""
         self.password = ""
         self.admin = False
 
-    def get_credentials(self):
-        # Preleva le credenziali dell'utente
-        self.username = input("Username: ")
-        self.password = getpass.getpass("Password: ")
-        return self.username, self.password
-
     def authenticate(self, username, password):
-        # controlla se le credenziali sono corrette
         auth = pam.pam()
         return auth.authenticate(username, password)
 
     def check_admin(self, username):
-        # controlla se l'utente è admin
         try:
-            result = subprocess.check_output(['groups', username])  # Controlla i gruppi dell'utente.
+            result = subprocess.check_output(['groups', username])
             return "sudo" in result.decode()
         except subprocess.CalledProcessError:
-            # se non riesce a controllare i gruppi dell'utente, ritorna Errore nel controllo
             return None
 
-    def sudo(self):
-        subprocess.run(["sudo", "-v"])
+    def run_command_with_sudo(self, command):
+        if not self.admin or not self.password:
+            return None, "Accesso non autorizzato"
+            
+        try:
+            process = subprocess.Popen(
+                ['sudo', '-S'] + command.split(),
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            stdout, stderr = process.communicate(input=self.password.encode())
+            return stdout.decode(), stderr.decode()
+        except subprocess.CalledProcessError as e:
+            return None, e.stderr.decode()
 
     def keep_sudo_alive(self):
-
         while True:
-            subprocess.run(["sudo", "-v"])
-            time.sleep(60)  # Refresh every 60 seconds
+            stdout, stderr = self.run_command_with_sudo("-v")
+            if stderr:
+                break
+            time.sleep(60)
 
     def adminlogin(self, username, password):
-        # funzione principale per il log-in
         if self.authenticate(username, password):
-            print('Avvio autenticazione')
-            admin_check = self.check_admin(username)  # Controllo se l'utente è admin.
-
-            if admin_check is True:
-                self.admin = True
-                self.sudo()
-                threading.Thread(target=self.keep_sudo_alive, daemon=True).start()
-                return True, "Login Successful"
-            else:
-                self.admin = False
-                return False, "User is not an admin"
-        else:
-            self.admin = False
-            return False, "Unvalid credentials"
+            self.username = username
+            self.password = password
+            self.admin = self.check_admin(username)
+            
+            if self.admin:
+                # Verifica che la password funzioni anche per sudo
+                stdout, stderr = self.run_command_with_sudo("-v")
+                if stderr:
+                    threading.Thread(target=self.keep_sudo_alive, daemon=True).start()
+            
+            return True, "Login effettuato con successo"
+        return False, "Credenziali non validi"

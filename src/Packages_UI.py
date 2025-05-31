@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
@@ -210,6 +211,7 @@ class PackagesUI(tk.Frame):
     def Export(self):
         filepath = filedialog.asksaveasfilename(
             title="Salva configurazione pacchetti",
+            initialdir=os.path.join(os.path.dirname(__file__), "configs", "packages"),
             defaultextension=".config",
             filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
         )
@@ -222,6 +224,7 @@ class PackagesUI(tk.Frame):
     def Import(self):
         filepath = filedialog.askopenfilename(
             title="Apri configurazione pacchetti",
+            initialdir=os.path.join(os.path.dirname(__file__), "configs", "packages"),
             filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
         )
         if not filepath:

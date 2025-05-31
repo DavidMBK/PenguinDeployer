@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import messagebox
 import subprocess
@@ -208,6 +209,7 @@ class ServicesUI(tk.Frame):
     def Export(self):
         filepath = filedialog.asksaveasfilename(
             title="Salva configurazione servizi",
+            initialdir=os.path.join(os.path.dirname(__file__), "configs", "services"),
             defaultextension=".config",
             filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
         )
@@ -220,6 +222,7 @@ class ServicesUI(tk.Frame):
     def Import(self):
         filepath = filedialog.askopenfilename(
             title="Apri configurazione servizi",
+            initialdir=os.path.join(os.path.dirname(__file__), "configs", "services"),
             filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
         )
         if not filepath:

@@ -1,11 +1,10 @@
 
-
 class Module:
     # classe base per i moduli, fatta per essere inheritata e non instanziata di per se.
 
     configfolder: str # cartella che contiene le configurazioni del modulo
     mname: str # nome del modulo
-    is_multi_import : bool
+    is_multi_import: bool
 
     def __init__(self, nconfigfolder):
         self.configfolder = nconfigfolder

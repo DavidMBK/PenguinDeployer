@@ -49,7 +49,7 @@ class EnvironmentLogic(Module):
 
         if self.gconfigs and self.gconfigs_filename:
             self.debug(f"Import Gnome configs da: {self.gconfigs_filename}")
-            subprocess.run(["sudo","./src/scripts/expimp_gconfigs.sh", "imp", self.gconfigs_filename], check=True)
+            subprocess.run(["./src/scripts/expimp_gconfigs.sh", "imp", self.gconfigs_filename], check=True)
         else:
             self.debug("Gnome configs non attivo o filename mancante, salto.")
 
@@ -73,7 +73,7 @@ class EnvironmentLogic(Module):
             confexp.write("\n" + self.prompt)
 
         if self.gconfigs:
-            subprocess.run(["sudo","./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
+            subprocess.run(["./src/scripts/expimp_gconfigs.sh", "exp", self.gconfigs_filename], check=True)
 
     def conf_import(self, filename):
         full_config_path = os.path.join(self.configfolder, filename)

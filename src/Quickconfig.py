@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 
 
 class QuickConfig:
@@ -18,16 +19,15 @@ class QuickConfig:
 
     def importconfig(self, to_import):
         # importa un file tar con le configurazioni
-        shutil.unpack_archive(to_import, os.getcwd() + "/configs", "tar")
 
-    def exportconfig(self, exportpath):
+        run = ["./src/scripts/install.sh"] + [to_import] + [os.getcwd()]
+        subprocess.call(run)
+
+    def exportconfig(self, exportpath, exportname):
         # esporta le configurazioni ad un file tar
 
-        here = os.getcwd()
-        shutil.make_archive("export", "tar", here + "/configs")
-
-        # mettilo nella cartella desiderata
-        shutil.move(here + "/export.tar", exportpath)
+        run = ["./src/scripts/install.sh"] + [exportname] + [exportpath] + [os.getcwd() + "/configs"]
+        subprocess.call(run)
 
     def apply_configs(self) -> bool:
         # funzione per applicare le configurazioni

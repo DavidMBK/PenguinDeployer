@@ -192,7 +192,7 @@ class QuickConfigUI(tk.Frame):
         if not filepath:
             return
 
-        self.manager.exportconfig(filepath)
+        self.manager.exportconfig(filepath,pathlib.Path(filepath).name)
 
     def apply_configs(self):
         if hasattr(self, "package_vars") and self.package_vars:

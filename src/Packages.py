@@ -16,12 +16,12 @@ class PackagesLogic(Module):
 
     def install_packages(self):
         # esegui lo script per installare i pacchetti
-        run = ["./src/scripts/install.sh"] + self.to_install
+        run = ["sudo","./src/scripts/install.sh"] + self.to_install
         subprocess.call(run)
 
     def unistall_packages(self):
         # esegui lo script per disnstallare i pacchetti
-        run = ["./src/scripts/uninstall.sh"] + self.to_uninstall
+        run = ["sudo","./src/scripts/uninstall.sh"] + self.to_uninstall
         subprocess.call(run)
 
     def conf_export(self, filename):
@@ -72,7 +72,7 @@ class PackagesLogic(Module):
         print(f'Disinstallati: {self.to_uninstall}')
 
     def find_package(self, query):
-        comand = ["./src/scripts/search_pack.sh"] + [query]
+        comand = ["sudo","./src/scripts/search_pack.sh"] + [query]
         result = subprocess.run(comand, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         matches = [line.split(" - ")[0] for line in result.stdout.strip().split("\n") if line]
         return matches

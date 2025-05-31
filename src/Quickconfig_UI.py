@@ -156,7 +156,7 @@ class QuickConfigUI(tk.Frame):
     def import_config(self):
         filepath = filedialog.askopenfilename(
             title="Import Configuration",
-            filetypes=[("Tar archives", "*.tar")]
+            filetypes=[("Tar archives", "*.tar.gz")]
         )
         if not filepath:
             return  # Utente ha annullato

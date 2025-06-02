@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from Packages import PackagesLogic
 from Services import ServicesLogic
 from Quickconfig import QuickConfig

@@ -161,7 +161,7 @@ class ServicesUI(tk.Frame):
         popup.title("Pacchetti trovati")
         popup.geometry("400x300")
 
-        tk.Label(popup, text="Seleziona un servizio da installare").pack(pady=5)
+        tk.Label(popup, text="Seleziona un servizio da aggiungere").pack(pady=5)
         listbox = tk.Listbox(popup)
         for match in matches:
             listbox.insert(tk.END, match)

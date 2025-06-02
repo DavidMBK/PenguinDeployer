@@ -4,27 +4,29 @@ import tkinter as tk
 from tkinter import messagebox
 import subprocess
 from tkinter import filedialog
-from Services import ServicesLogic  # importa la classe logica
 
+from Services import ServicesLogic  # Importa la logica di gestione dei servizi
+
+# Classe UI per la gestione dei servizi
 class ServicesUI(tk.Frame):
     def __init__(self, parent, controller, config_folder, service_manager=None):
         super().__init__(parent)
         self.controller = controller
+        # Usa un service manager esistente o crea uno nuovo
         self.manager = service_manager if service_manager else ServicesLogic(config_folder)
 
-        self.service_states = {}
+        self.service_states = {}  # Stato attuale dei servizi (abilitato/disabilitato)
+        self.selected_service = None  # Servizio selezionato nella UI
 
-        self.selected_service = None  # servizio selezionato
-
-        # Top frame
+        # Frame superiore (elenco servizi)
         self.top_frame = tk.LabelFrame(self, padx=10, pady=10)
         self.top_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(10, 5))
 
-        # Bottom frame
+        # Frame inferiore (barra comandi)
         self.bottom_frame = tk.LabelFrame(self, padx=10, pady=10)
         self.bottom_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
 
-        # Scrollable area
+        # Area scrollabile nel frame superiore
         self.container = tk.Frame(self.top_frame)
         self.container.pack(fill=tk.BOTH, expand=True)
 
@@ -36,13 +38,15 @@ class ServicesUI(tk.Frame):
         self.window_id = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
 
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
+
+        # Eventi per lo scroll dinamico
         self.scrollable_frame.bind("<Configure>", self._update_scroll_region)
         self.canvas.bind("<Configure>", self._on_canvas_resize)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.scrollable_frame.bind("<Enter>", self._bind_to_mousewheel)
         self.scrollable_frame.bind("<Leave>", self._unbind_from_mousewheel)
 
-        # Bottom controls
+        # Entry di ricerca + bottoni
         self.search_entry = tk.Entry(self.bottom_frame)
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
@@ -57,10 +61,7 @@ class ServicesUI(tk.Frame):
                 cmd = self.Export
             tk.Button(self.bottom_frame, text=label, command=cmd).pack(side=tk.LEFT, padx=2)
 
-
-    def placeholder_action(self):
-        messagebox.showinfo("Info", "Funzionalità non implementata.")
-
+    # Scroll dinamico con mousewheel
     def _update_scroll_region(self, event):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
@@ -70,9 +71,9 @@ class ServicesUI(tk.Frame):
     def _on_mousewheel(self, event):
         if event.delta:
             self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        elif event.num == 4:
+        elif event.num == 4:  # Scroll su (Linux)
             self.canvas.yview_scroll(-1, "units")
-        elif event.num == 5:
+        elif event.num == 5:  # Scroll giù (Linux)
             self.canvas.yview_scroll(1, "units")
 
     def _bind_to_mousewheel(self, event):
@@ -85,26 +86,28 @@ class ServicesUI(tk.Frame):
         self.canvas.unbind_all("<Button-4>")
         self.canvas.unbind_all("<Button-5>")
 
-
-
+    # Aggiunge una riga nella UI per un pacchetto/servizio
     def add_service_row(self, pkg_name):
-        row = tk.Frame(self.scrollable_frame, name=pkg_name)  # assegna un name usabile da winfo_name
+        row = tk.Frame(self.scrollable_frame, name=pkg_name)
         row.pack(fill=tk.X, expand=True)
         row.grid_columnconfigure(0, weight=1)
         row.grid_columnconfigure(1, weight=0)
 
+        # Evento di selezione
         def on_select(event, name=pkg_name):
             self.selected_service = name
-            # Evidenzia la riga selezionata
+            # Evidenziazione visiva
             for widget in self.scrollable_frame.winfo_children():
                 widget.config(bg="#d9d9d9")
             row.config(bg="#bdbdbd")
 
+        # Etichetta con nome pacchetto
         name_label = tk.Label(row, text=pkg_name, anchor="w")
         name_label.grid(row=0, column=0, sticky="w", padx=10, pady=2)
         name_label.bind("<Button-1>", on_select)
         row.bind("<Button-1>", on_select)
 
+        # Bottone per toggle (Enable/Disable)
         toggle_btn = tk.Button(row)
         toggle_btn.grid(row=0, column=1, sticky="e", padx=10, pady=2)
         toggle_btn.config(
@@ -112,35 +115,31 @@ class ServicesUI(tk.Frame):
             command=lambda name=pkg_name, btn=toggle_btn: self.toggle_install(name, btn)
         )
 
-
+    # Attiva/disattiva un servizio
     def toggle_install(self, pkg_name, button):
         self.service_states[pkg_name] = not self.service_states[pkg_name]
         new_state = self.service_states[pkg_name]
 
         button.config(text=self._get_button_text(pkg_name))
-        action = "Enable" if new_state else "Disable"
 
         if new_state:
-            # Aggiunto alla lista to_enable
             if pkg_name not in self.manager.to_enable:
                 self.manager.to_enable.append(pkg_name)
-            # Rimosso dalla lista to_disable, se presente
             if pkg_name in self.manager.to_disable:
                 self.manager.to_disable.remove(pkg_name)
         else:
-            # Aggiunto alla lista to_disable
             if pkg_name not in self.manager.to_disable:
                 self.manager.to_disable.append(pkg_name)
-            # Rimosso dalla lista to_enable, se presente
             if pkg_name in self.manager.to_enable:
                 self.manager.to_enable.remove(pkg_name)
-        self.manager.debug()
 
-      
+        self.manager.debug()  # Stampa stato per debug
+
+    # Testo del bottone in base allo stato del servizio
     def _get_button_text(self, pkg_name):
-        # Se False (non installato), testo bottone è "Install"
         return "Enable" if self.service_states.get(pkg_name, False) else "Disable"
 
+    # Finestra popup per cercare e installare servizi
     def open_service_popup(self):
         query = self.search_entry.get().strip()
         if not query:
@@ -149,7 +148,6 @@ class ServicesUI(tk.Frame):
 
         try:
             matches = self.manager.find_service(query)
-
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Errore", f"Errore nella ricerca: {e.stderr}")
             return
@@ -158,17 +156,18 @@ class ServicesUI(tk.Frame):
             messagebox.showinfo("Nessun risultato", "Nessun servizio trovato.")
             return
 
+        # Popup con risultati
         popup = tk.Toplevel(self)
         popup.title("Pacchetti trovati")
         popup.geometry("400x300")
 
         tk.Label(popup, text="Seleziona un servizio da installare").pack(pady=5)
-
         listbox = tk.Listbox(popup)
         for match in matches:
             listbox.insert(tk.END, match)
         listbox.pack(expand=True, fill=tk.BOTH, padx=10)
 
+        # Bottone per installazione
         def install_selected():
             selected = listbox.curselection()
             if not selected:
@@ -187,27 +186,26 @@ class ServicesUI(tk.Frame):
 
         tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
 
+    # Rimuove il servizio selezionato
     def remove_selected_service(self):
         pkg = self.selected_service
         if not pkg or pkg not in self.service_states:
             messagebox.showwarning("Nessuna selezione", "Seleziona prima un servizio.")
             return
 
-        # Rimuovi widget dalla UI
         try:
             row = self.scrollable_frame.nametowidget(pkg)
             row.destroy()
         except KeyError:
             pass
 
-        # Rimuovi dagli stati e dalle liste manager
         del self.service_states[pkg]
         self.manager.to_enable = [p for p in self.manager.to_enable if p != pkg]
         self.manager.to_disable = [p for p in self.manager.to_disable if p != pkg]
 
         self.selected_service = None
 
-    
+    # Esporta configurazione corrente su file
     def Export(self):
         filepath = filedialog.asksaveasfilename(
             title="Salva configurazione servizi",
@@ -216,11 +214,12 @@ class ServicesUI(tk.Frame):
             filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
         )
         if not filepath:
-            return  # Utente ha annullato
+            return
 
         self.manager.conf_export(pathlib.Path(filepath).name)
         messagebox.showinfo("Esportazione completata", f"Configurazione esportata in:\n{filepath}")
-    
+
+    # Importa una configurazione da file
     def Import(self):
         filepath = filedialog.askopenfilename(
             title="Apri configurazione servizi",
@@ -228,9 +227,9 @@ class ServicesUI(tk.Frame):
             filetypes=[("File configurazione", "*.config"), ("Tutti i file", "*.*")]
         )
         if not filepath:
-            return  # Utente ha annullato
+            return
 
-        # Pulisci lo stato attuale
+        # Pulisce lo stato attuale
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
         self.service_states.clear()
@@ -238,10 +237,8 @@ class ServicesUI(tk.Frame):
         self.manager.to_disable.clear()
         self.selected_service = None
 
-        # Importa la configurazione
+        # Importa dal file selezionato
         self.manager.conf_import_multiple([pathlib.Path(filepath).name])
-
-        # Unisci i pacchetti da installare e disinstallare
         all_services = set(self.manager.to_enable + self.manager.to_disable)
 
         for pkg in all_services:
@@ -251,14 +248,13 @@ class ServicesUI(tk.Frame):
 
         messagebox.showinfo("Importazione completata", f"Configurazione importata da:\n{filepath}")
 
+    # Ricarica la UI dai dati nel manager
     def refresh_from_manager(self):
-        # Pulisci lo stato attuale della UI, ma NON toccare il manager!
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
         self.service_states.clear()
         self.selected_service = None
 
-        # Ricarica dalla memoria del manager
         all_services = set(self.manager.to_enable + self.manager.to_disable)
 
         for pkg in all_services:

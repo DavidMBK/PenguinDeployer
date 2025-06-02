@@ -5,7 +5,7 @@ from Mainwindow_UI import Mainwindow
 
 class MainUI:
 
-    def __init__(self, main, env_manager=None, pack_manager=None, service_manager=None):
+    def __init__(self, main, env_manager=None, pack_manager=None, service_manager=None): # Inizializza l'interfaccia principale
 
         self.main = main
         self.env_manager = env_manager
@@ -48,7 +48,7 @@ class MainUI:
         y = (user_screen_height - height) // 2
         self.root.geometry(f"{width}x{height}+{x}+{y}")
 
-    def modular(self, name):
+    def modular(self, name): # modifica la dimensione della finestra in base al frame
         if name == "LoginFrame":
             self.center_window(925, 500)
             self.root.resizable(False, False)

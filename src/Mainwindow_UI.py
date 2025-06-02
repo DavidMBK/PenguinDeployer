@@ -15,6 +15,7 @@ from Quickconfig_UI import QuickConfigUI
 class Mainwindow(tk.Frame):
     def __init__(self, parent, controller, main, env_manager=None, service_manager = None, pack_manager=None):
         super().__init__(parent)
+        # Inzializzazione 
         self.controller = controller
         self.main = main
         self.env_manager = env_manager
@@ -86,7 +87,7 @@ class Mainwindow(tk.Frame):
         self.current_frame = self.placeholder_frame(f"Frame '{frame_name}' non trovato")
         self.current_frame.pack(fill=tk.BOTH, expand=True)
 
-    def Applychanges(self):
+    def Applychanges(self): # Semplice Modal
         response = messagebox.askquestion("Confirm Changes", "Do you want to apply the changes?")
         if response == "yes":
             self.main.runconfig()

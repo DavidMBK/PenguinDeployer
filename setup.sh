@@ -93,13 +93,36 @@ Type=Application  # Tipo di lanciatore
 Terminal=true  # Apro il terminale, per debug
 EOL
 
-# 5. Installazione
-echo "Installazione..."
-mkdir -p ~/.local/share/applications  # Crea la cartella locale per i file desktop se non esiste
-# Crea un collegamento simbolico al file desktop nella cartella applicazioni utente per rendere disponibile il launcher nel menu
-ln -sf "$DESKTOP_FILE" ~/.local/share/applications/$(basename "$DESKTOP_FILE")
+# 5. Installazione desktop file
+echo "Installazione launcher desktop..."
 
-# Aggiorna il database delle applicazioni per riconoscere il nuovo launcher
-update-desktop-database ~/.local/share/applications
+# Verifica esistenza directory applicazioni
+APPLICATIONS_DIR="$HOME/.local/share/applications"
+mkdir -p "$APPLICATIONS_DIR" || { echo "❌ Impossibile creare $APPLICATIONS_DIR"; exit 1; }
 
-echo "Installazione completata! Cerca 'Penguin Deployer' nel menu applicazioni o semplicemente esegui Penguin-Deployer.desktop all'interno dell folder"
+# Crea collegamento simbolico
+echo "Creo collegamento in $APPLICATIONS_DIR"
+if ! ln -sf "$DESKTOP_FILE" "$APPLICATIONS_DIR/$(basename "$DESKTOP_FILE")"; then
+    echo "❌ Fallita creazione collegamento simbolico"
+    echo "Prova manualmente con:"
+    echo "  ln -sf \"$DESKTOP_FILE\" \"$APPLICATIONS_DIR/$(basename \"$DESKTOP_FILE\")\""
+    exit 1
+fi
+
+# Aggiorna database desktop
+echo "Aggiorno database applicazioni..."
+if ! update-desktop-database "$APPLICATIONS_DIR"; then
+    echo "⚠ Attenzione: fallito aggiornamento database desktop"
+    echo "L'applicazione potrebbe non apparire nel menu"
+fi
+
+# Verifica finale
+if [ -f "$APPLICATIONS_DIR/$(basename "$DESKTOP_FILE")" ]; then
+    echo "✅ Installazione completata! Cerca 'Penguin Deployer' nel menu applicazioni"
+    echo "Oppure esegui direttamente: $APP_DIR/Penguin-Deployer.desktop"
+else
+    echo "❌ Il file desktop non è stato creato correttamente"
+    echo "Prova a crearlo manualmente con:"
+    echo "  cp \"$DESKTOP_FILE\" \"$APPLICATIONS_DIR/\""
+    exit 1
+fi

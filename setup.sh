@@ -51,7 +51,13 @@ find "$APP_DIR" -type f -name "*.py" ! -name "main.py" -exec chmod 644 {} \;
 
 # 5. Creazione desktop file
 echo "⏳ Creazione launcher desktop..."
-DESKTOP_FILE="$HOME/Desktop/Penguin-Deployer.desktop"
+USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+DESKTOP_DIR="$USER_HOME/Desktop"
+
+# Crea cartella Desktop se non esiste
+mkdir -p "$DESKTOP_DIR"
+
+DESKTOP_FILE="$DESKTOP_DIR/Penguin-Deployer.desktop"
 
 # Crea il desktop file sul Desktop
 echo "[Desktop Entry]" > "$DESKTOP_FILE"
@@ -63,7 +69,8 @@ echo "Path=$APP_DIR" >> "$DESKTOP_FILE"
 echo "Type=Application" >> "$DESKTOP_FILE"
 echo "Terminal=true" >> "$DESKTOP_FILE"
 
-# Imposta permessi per evitare il lucchetto
+# Imposta permessi corretti (owner=utente corrente)
+chown "$SUDO_USER:" "$DESKTOP_FILE"
 chmod +x "$DESKTOP_FILE"
 chmod 644 "$DESKTOP_FILE"
 

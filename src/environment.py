@@ -30,7 +30,7 @@ class EnvironmentLogic(Module):
 
         if self.prompt:
             self.debug(f"Cambio prompt: {self.prompt}")
-            subprocess.run(["sudo","./src/scripts/change_prompt.sh", self.prompt], check=True)
+            subprocess.run(["./src/scripts/change_prompt.sh", self.prompt], check=True)
         else:
             self.debug("Prompt non specificato o vuoto, salto.")
 
@@ -58,7 +58,7 @@ class EnvironmentLogic(Module):
         self.gconfigs_filename = os.path.join(self.configfolder, base_name)
 
         with open(full_config_path, 'w') as confexp:
-            confexp.write("\neditor:" + self.editor)
+            confexp.write("editor:" + self.editor)
             confexp.write("\nhostname:" + self.hostname)
             confexp.write("\ngconfigs:" + str(self.gconfigs))
             confexp.write("\ngconfigs_filename:" + self.gconfigs_filename)

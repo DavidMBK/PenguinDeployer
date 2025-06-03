@@ -16,7 +16,6 @@ class EnvironmentUI(tk.Frame):
         
         # Definisce i campi di configurazione con etichetta e nome interno
         self.fields = [
-            ("Shell:", "shell"),
             ("Editor:", "editor"), 
             ("Prompt:", "prompt"),
             ("Hostname:", "hostname")
@@ -82,7 +81,6 @@ class EnvironmentUI(tk.Frame):
     # Raccoglie i valori correnti dai campi di input e checkbox
     def get_current_values(self):
         return {
-            "shell": self.entries["shell"].get(),
             "editor": self.entries["editor"].get(),
             "prompt": self.entries["prompt"].get(),
             "hostname": self.entries["hostname"].get(),
@@ -115,7 +113,6 @@ class EnvironmentUI(tk.Frame):
 
             # Aggiorna la UI con i nuovi valori importati
             self.set_current_values({
-                "shell": self.manager.shell,
                 "editor": self.manager.editor,
                 "prompt": self.manager.prompt,
                 "hostname": self.manager.hostname,
@@ -147,7 +144,6 @@ class EnvironmentUI(tk.Frame):
             self.update_status(f"Esportazione {filename} in corso...")
 
             # Aggiorna il manager con i valori correnti per esportarli
-            self.manager.shell = current_values["shell"]
             self.manager.editor = current_values["editor"]
             self.manager.prompt = current_values["prompt"]
             self.manager.hostname = current_values["hostname"]
@@ -166,7 +162,6 @@ class EnvironmentUI(tk.Frame):
     # Aggiorna i campi di input UI con i valori attualmente nel manager
     def refresh_from_manager(self):
         self.set_current_values({
-            "shell": self.manager.shell,
             "editor": self.manager.editor,
             "prompt": self.manager.prompt,
             "hostname": self.manager.hostname,
@@ -176,7 +171,6 @@ class EnvironmentUI(tk.Frame):
     # Metodo per salvare i dati realmente nel manager
     def save_changes_to_manager(self):
         current_values = self.get_current_values()
-        self.manager.shell = current_values["shell"]
         self.manager.editor = current_values["editor"]
         self.manager.prompt = current_values["prompt"]
         self.manager.hostname = current_values["hostname"]

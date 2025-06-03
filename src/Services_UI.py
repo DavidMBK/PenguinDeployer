@@ -184,7 +184,7 @@ class ServicesUI(tk.Frame):
 
             popup.destroy()
 
-        tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
+        tk.Button(popup, text="Aggiungi", command=install_selected).pack(pady=5)
 
     # Rimuove il servizio selezionato
     def remove_selected_service(self):

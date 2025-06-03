@@ -16,30 +16,38 @@ python3 -m venv "$VENV_DIR" || { echo "❌ Errore creazione virtualenv"; exit 1;
 
 # 3. Imposta permessi automaticamente
 echo "Configurazione permessi..."
-chmod 755 "$APP_DIR/app.sh"  # Rende eseguibile lo script di installazione
 chmod 755 "$APP_DIR/src/main.py"  # Rende eseguibile il file principale Python
 find "$APP_DIR" -type f -name "*.py" ! -name "main.py" -exec chmod 644 {} \;  # Imposta permessi di lettura/scrittura per gli altri script Python (escluso main.py)
 
-# 4. Crea desktop file (https://www.youtube.com/watch?v=9CTmC5Y7QeM&t=4s)
+# 4. Crea desktop file
 echo "Creazione launcher desktop..."
 cat > "$DESKTOP_FILE" <<EOL
 [Desktop Entry]
 Version=1.0
-Name=Penguin Deployer  # Nome che apparirà nel menu applicazioni
-Exec=$VENV_DIR/bin/python $APP_DIR/src/main.py  # Comando per eseguire il programma principale usando il venv
-Icon=$APP_DIR/src/icon/icon.png  # Icona dell'applicazione
-Path=$APP_DIR  # Directory di lavoro quando si avvia l'app
-Type=Application  # Tipo di lanciatore
-Terminal=true  # Apro il terminale, per debug
+Name=Penguin Deployer
+Exec=$APP_DIR/app.sh
+Icon=$APP_DIR/src/icon/icon.png
+Path=$APP_DIR
+Type=Application
+Terminal=true
 EOL
 
-# 5. Installazione
-echo "Installazione..."
-mkdir -p ~/.local/share/applications  # Crea la cartella locale per i file desktop se non esiste
-# Crea un collegamento simbolico al file desktop nella cartella applicazioni utente per rendere disponibile il launcher nel menu
-ln -sf "$DESKTOP_FILE" ~/.local/share/applications/$(basename "$DESKTOP_FILE")
+# Rendi il desktop file eseguibile
+chmod +x "$DESKTOP_FILE"
 
-# Aggiorna il database delle applicazioni per riconoscere il nuovo launcher
-update-desktop-database ~/.local/share/applications
+# 5. Installazione launcher
+echo "Installazione launcher..."
+APPLICATIONS_DIR="$HOME/.local/share/applications"
+mkdir -p "$APPLICATIONS_DIR"
 
-echo "Installazione completata! Cerca 'Penguin Deployer' nel menu applicazioni o semplicemente esegui Penguin-Deployer.desktop all'interno dell folder"
+# Crea collegamento simbolico
+ln -sf "$DESKTOP_FILE" "$APPLICATIONS_DIR/"
+
+# Rendi app.sh eseguibile
+chmod +x "$APP_DIR/app.sh"
+
+# Aggiorna database desktop
+update-desktop-database "$APPLICATIONS_DIR"
+
+echo "✅ Installazione completata! Il launcher è pronto nel menu applicazioni"
+echo "Puoi anche eseguire direttamente: ./app.sh"

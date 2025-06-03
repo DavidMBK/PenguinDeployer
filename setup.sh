@@ -59,7 +59,7 @@ mkdir -p "$DESKTOP_DIR"
 
 DESKTOP_FILE="$DESKTOP_DIR/Penguin-Deployer.desktop"
 
-# Crea il desktop file sul Desktop
+# Crea il desktop file con attributo trusted incluso
 echo "[Desktop Entry]" > "$DESKTOP_FILE"
 echo "Version=1.0" >> "$DESKTOP_FILE"
 echo "Name=Penguin Deployer" >> "$DESKTOP_FILE"
@@ -68,26 +68,19 @@ echo "Icon=$APP_DIR/src/icon/icon.png" >> "$DESKTOP_FILE"
 echo "Path=$APP_DIR" >> "$DESKTOP_FILE"
 echo "Type=Application" >> "$DESKTOP_FILE"
 echo "Terminal=true" >> "$DESKTOP_FILE"
+echo "Trusted=true" >> "$DESKTOP_FILE"  # Forza trusted status
 
-# Imposta permessi corretti (owner=utente corrente)
+# Imposta permessi corretti
 chown "$SUDO_USER:" "$DESKTOP_FILE"
-chmod +x "$DESKTOP_FILE"
-chmod 755 "$DESKTOP_FILE"  # 755 invece di 644 per abilitare l'esecuzione
-
-# Aggiungi attributo di esecuzione esplicito
-setfattr -n user.executable -v 1 "$DESKTOP_FILE"
+chmod 755 "$DESKTOP_FILE"
 
 # 6. Installazione finale
 APPLICATIONS_DIR="$HOME/.local/share/applications"
 mkdir -p "$APPLICATIONS_DIR"
-
-# Crea collegamento nella cartella applicazioni
 ln -sf "$DESKTOP_FILE" "$APPLICATIONS_DIR/"
-
-# Aggiorna database desktop
 update-desktop-database "$APPLICATIONS_DIR"
 
 echo "✅ Installazione completata!"
 echo "- Launcher creato sul Desktop: $DESKTOP_FILE"
-echo "- Avvia con doppio click o cerca 'Penguin Deployer' nel menu applicazioni"
+echo "- Avvia con doppio click o cerca 'Penguin Deployer' nel menu"
 echo "- Ambiente virtuale: $VENV_DIR"

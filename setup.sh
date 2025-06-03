@@ -5,7 +5,6 @@ set -e
 # 1. Configurazione iniziale
 APP_DIR="$(dirname "$(realpath "$0")")"
 VENV_DIR="$HOME/.penguindeployer_venv"
-DESKTOP_FILE="$APP_DIR/Penguin-Deployer.desktop"
 PYTHON_VERSION="3.12"
 PYTHON_CMD="python3.12"
 
@@ -52,26 +51,34 @@ find "$APP_DIR" -type f -name "*.py" ! -name "main.py" -exec chmod 644 {} \;
 
 # 5. Creazione desktop file
 echo "⏳ Creazione launcher desktop..."
-cat > "$DESKTOP_FILE" <<EOL
-[Desktop Entry]
-Version=1.0
-Name=Penguin Deployer
-Exec=$APP_DIR/app.sh
-Icon=$APP_DIR/src/icon/icon.png
-Path=$APP_DIR
-Type=Application
-Terminal=true
-EOL
+HOME_DESKTOP_FILE="$HOME/Penguin-Deployer.desktop"
 
-chmod +x "$DESKTOP_FILE"
+# Crea il desktop file nella home
+echo "[Desktop Entry]" > "$HOME_DESKTOP_FILE"
+echo "Version=1.0" >> "$HOME_DESKTOP_FILE"
+echo "Name=Penguin Deployer" >> "$HOME_DESKTOP_FILE"
+echo "Exec=$APP_DIR/app.sh" >> "$HOME_DESKTOP_FILE"
+echo "Icon=$APP_DIR/src/icon/icon.png" >> "$HOME_DESKTOP_FILE"
+echo "Path=$APP_DIR" >> "$HOME_DESKTOP_FILE"
+echo "Type=Application" >> "$HOME_DESKTOP_FILE"
+echo "Terminal=true" >> "$HOME_DESKTOP_FILE"
+
+# Imposta permessi per evitare il lucchetto
+chmod +x "$HOME_DESKTOP_FILE"
+chmod 644 "$HOME_DESKTOP_FILE"
 
 # 6. Installazione finale
 APPLICATIONS_DIR="$HOME/.local/share/applications"
 mkdir -p "$APPLICATIONS_DIR"
-ln -sf "$DESKTOP_FILE" "$APPLICATIONS_DIR/"
+
+# Crea collegamento nella cartella applicazioni
+ln -sf "$HOME_DESKTOP_FILE" "$APPLICATIONS_DIR/"
+
+# Aggiorna database desktop
 update-desktop-database "$APPLICATIONS_DIR"
 
 echo "✅ Installazione completata!"
+echo "- Launcher creato in: $HOME_DESKTOP_FILE"
 echo "- Avvia con: ./app.sh"
 echo "- Oppure cerca 'Penguin Deployer' nel menu applicazioni"
 echo "- Ambiente virtuale: $VENV_DIR"

@@ -15,7 +15,7 @@ class LoginFrame(tk.Frame):
         frame.place(x=290, y=70)
 
         # Titolo "Sign in"
-        heading = tk.Label(frame, text='Sign in', fg='black', bg='#d9d9d9',
+        heading = tk.Label(frame, text='Accesso', fg='black', bg='#d9d9d9',
                            font=('Microsoft YaHei UI Light', 23, 'normal'))
         heading.place(x=100, y=5)
 
@@ -57,7 +57,7 @@ class LoginFrame(tk.Frame):
         tk.Frame(frame, width=295, height=1, bg='gray').place(x=25, y=177)
 
         # Pulsante Sign in che chiama il metodo try_login al click
-        tk.Button(frame, width=32, pady=7, text='Sign in', bg='black', fg='#d9d9d9', border=0,
+        tk.Button(frame, width=32, pady=7, text='Accedi', bg='black', fg='#d9d9d9', border=0,
                   command=self.try_login).place(x=34, y=204)
 
         # Label "Love the project?"

@@ -1,3 +1,4 @@
+pillow==9.3.0
 darkdetect==0.8.0
 packaging==25.0
 pam==0.2.0

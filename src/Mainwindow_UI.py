@@ -63,7 +63,7 @@ class Mainwindow(tk.Frame):
             self.modulebuttons.append(modulebutton)
 
         # Bottone per applicare le configurazioni
-        self.apply = tk.Button(self.sidebar, text="Apply Configurations",
+        self.apply = tk.Button(self.sidebar, text="Applica le modifiche",
                                command=self.Applychanges, width=30, height=3)
         self.apply.pack(side=tk.BOTTOM, pady=10)
 
@@ -73,7 +73,10 @@ class Mainwindow(tk.Frame):
     def show_frame(self, frame_name):
         # Distruggi frame corrente se esiste
         if self.current_frame:
+            if hasattr(self.current_frame, "save_changes_to_manager"):
+                self.current_frame.save_changes_to_manager()
             self.current_frame.pack_forget()
+
 
         for frame in self.moduleframes:
             if frame.__class__.__name__ == frame_name:
@@ -88,7 +91,7 @@ class Mainwindow(tk.Frame):
         self.current_frame.pack(fill=tk.BOTH, expand=True)
 
     def Applychanges(self): # Semplice Modal
-        response = messagebox.askquestion("Confirm Changes", "Do you want to apply the changes?")
+        response = messagebox.askquestion("Richiesta di conferma", "Sei sicuro di voler applicare le modifiche?")
         if response == "yes":
             self.main.runconfig()
         elif response == "no":

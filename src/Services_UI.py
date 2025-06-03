@@ -50,14 +50,14 @@ class ServicesUI(tk.Frame):
         self.search_entry = tk.Entry(self.bottom_frame)
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
-        for label in ["Aggiungi", "Rimuovi", "Import", "Export"]:
+        for label in ["Aggiungi", "Rimuovi", "Importa", "Exporta"]:
             if label == "Aggiungi":
                 cmd = self.open_service_popup
             elif label == "Rimuovi":
                 cmd = self.remove_selected_service
-            elif label == "Import":
+            elif label == "Importa":
                 cmd = self.Import
-            elif label == "Export":
+            elif label == "Exporta":
                 cmd = self.Export
             tk.Button(self.bottom_frame, text=label, command=cmd).pack(side=tk.LEFT, padx=2)
 
@@ -184,7 +184,7 @@ class ServicesUI(tk.Frame):
 
             popup.destroy()
 
-        tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
+        tk.Button(popup, text="Aggiungi", command=install_selected).pack(pady=5)
 
     # Rimuove il servizio selezionato
     def remove_selected_service(self):

@@ -30,9 +30,9 @@ class QuickConfigUI(tk.Frame):
         top_frame.pack(fill=tk.X, padx=5, pady=5)
 
         # Bottoni di navigazione
-        tk.Button(top_frame, text="Packages", command=self.show_packages).pack(side=tk.LEFT, padx=5)
-        tk.Button(top_frame, text="Services", command=self.show_services).pack(side=tk.LEFT, padx=5)
-        tk.Button(top_frame, text="Environment", command=self.show_environment).pack(side=tk.LEFT, padx=5)
+        tk.Button(top_frame, text="Software", command=self.show_packages).pack(side=tk.LEFT, padx=5)
+        tk.Button(top_frame, text="Servizi", command=self.show_services).pack(side=tk.LEFT, padx=5)
+        tk.Button(top_frame, text="Ambiente", command=self.show_environment).pack(side=tk.LEFT, padx=5)
 
         # Area principale per la visualizzazione dei contenuti
         self.main_frame = tk.Frame(self, bd=2, relief=tk.GROOVE)
@@ -42,9 +42,9 @@ class QuickConfigUI(tk.Frame):
         bottom_frame = tk.Frame(self)
         bottom_frame.pack(fill=tk.X, padx=5, pady=5)
 
-        tk.Button(bottom_frame, text="Import Config", command=self.import_config).pack(side=tk.LEFT, padx=5)
-        tk.Button(bottom_frame, text="Export Config", command=self.export_config).pack(side=tk.LEFT, padx=5)
-        tk.Button(bottom_frame, text="Apply Config", command=self.apply_configs).pack(side=tk.RIGHT, padx=5)
+        tk.Button(bottom_frame, text="Importa Config", command=self.import_config).pack(side=tk.LEFT, padx=5)
+        tk.Button(bottom_frame, text="Exporta Config", command=self.export_config).pack(side=tk.LEFT, padx=5)
+        tk.Button(bottom_frame, text="Applica Config", command=self.apply_configs).pack(side=tk.RIGHT, padx=5)
 
         # Barra di stato inferiore
         self.status_var = tk.StringVar()
@@ -102,7 +102,7 @@ class QuickConfigUI(tk.Frame):
     def show_packages(self):
         self.current_section = "packages"
         self.clear_main_frame()
-        tk.Label(self.main_frame, text="Select Packages:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
+        tk.Label(self.main_frame, text="Pacchetti Selezionati:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
 
         if not self.packages_configs:
             tk.Label(self.main_frame, text="No package configs found.", fg="red").pack()
@@ -117,7 +117,7 @@ class QuickConfigUI(tk.Frame):
     def show_services(self):
         self.current_section = "services"
         self.clear_main_frame()
-        tk.Label(self.main_frame, text="Select Services:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
+        tk.Label(self.main_frame, text="Servizi Selezionati:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
 
         if not self.services_configs:
             tk.Label(self.main_frame, text="No service configs found.", fg="red").pack()
@@ -132,7 +132,7 @@ class QuickConfigUI(tk.Frame):
     def show_environment(self):
         self.current_section = "environment"
         self.clear_main_frame()
-        tk.Label(self.main_frame, text="Select Environment:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
+        tk.Label(self.main_frame, text="Ambiente Selezionato:", font=("Arial", 11, "bold")).pack(anchor="w", pady=(0,5))
 
         if not self.env_configs:
             tk.Label(self.main_frame, text="No environment configs found.", fg="red").pack()
@@ -192,11 +192,11 @@ class QuickConfigUI(tk.Frame):
     # Ricarica la vista attiva corrente
     def refresh_current_view(self):
         if hasattr(self, "current_section"):
-            if self.current_section == "packages":
+            if self.current_section == "Software":
                 self.show_packages()
-            elif self.current_section == "services":
+            elif self.current_section == "Servizi":
                 self.show_services()
-            elif self.current_section == "environment":
+            elif self.current_section == "Ambiente":
                 self.show_environment()
         else:
             self.show_packages()

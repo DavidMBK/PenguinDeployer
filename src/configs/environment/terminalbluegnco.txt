@@ -7,7 +7,7 @@ launch-time=int64 1748699485
 release-check-time=uint32 1748861070
 
 [org/gnome/control-center]
-last-panel='display'
+last-panel='background'
 window-state=(980, 640, false)
 
 [org/gnome/desktop/app-folders]
@@ -163,10 +163,10 @@ ignore-phase2-ca-cert=false
 last-folder-path='/home/david/Documents/GitHub'
 
 [org/gnome/portal/filechooser/snap.discord]
-last-folder-path='/home/david/Documents/GitHub'
+last-folder-path='/home/david/Downloads'
 
 [org/gnome/portal/filechooser/snap.firefox]
-last-folder-path='/home/david/Downloads'
+last-folder-path='/home/david/Documents/GitHub/Esercizio_15'
 
 [org/gnome/settings-daemon/plugins/color]
 night-light-enabled=false
@@ -193,7 +193,7 @@ tiling-popup-all-workspace=true
 locations=@av []
 
 [org/gnome/software]
-check-timestamp=int64 1748953714
+check-timestamp=int64 1748975259
 
 [org/gtk/gtk4/settings/file-chooser]
 date-format='regular'

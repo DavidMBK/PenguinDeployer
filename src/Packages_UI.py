@@ -46,14 +46,14 @@ class PackagesUI(tk.Frame):
         self.search_entry.pack(side=tk.LEFT, padx=(0, 5), fill=tk.X, expand=True)
 
         # Pulsanti per operazioni pacchetti
-        for label in ["Aggiungi", "Rimuovi", "Import", "Export"]:
+        for label in ["Aggiungi", "Rimuovi", "Importa", "Exporta"]:
             if label == "Aggiungi":
                 cmd = self.open_package_popup
             elif label == "Rimuovi":
                 cmd = self.remove_selected_package
-            elif label == "Import":
+            elif label == "Importa":
                 cmd = self.Import
-            elif label == "Export":
+            elif label == "Exporta":
                 cmd = self.Export
             tk.Button(self.bottom_frame, text=label, command=cmd).pack(side=tk.LEFT, padx=2)
 
@@ -160,7 +160,7 @@ class PackagesUI(tk.Frame):
         popup.title("Pacchetti trovati")
         popup.geometry("400x300")
 
-        tk.Label(popup, text="Seleziona un pacchetto da installare").pack(pady=5)
+        tk.Label(popup, text="Seleziona un pacchetto da aggiungere").pack(pady=5)
         listbox = tk.Listbox(popup)
         for match in matches:
             listbox.insert(tk.END, match)
@@ -183,7 +183,7 @@ class PackagesUI(tk.Frame):
 
             popup.destroy()
 
-        tk.Button(popup, text="Installa", command=install_selected).pack(pady=5)
+        tk.Button(popup, text="Aggiungi", command=install_selected).pack(pady=5)
 
     # Rimuove pacchetto selezionato
     def remove_selected_package(self):

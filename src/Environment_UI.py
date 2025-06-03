@@ -16,12 +16,11 @@ class EnvironmentUI(tk.Frame):
         
         # Definisce i campi di configurazione con etichetta e nome interno
         self.fields = [
-            ("Shell:", "shell"),
             ("Editor:", "editor"), 
             ("Prompt:", "prompt"),
             ("Hostname:", "hostname")
         ]
-        
+        self.vars = {}  # StringVar per ogni campo
         self.entries = {}  # Dizionario per salvare i widget Entry
         
         # Crea un campo di input per ogni elemento in self.fields (Quindi Shell, Editor, Prompt, Hostname)
@@ -31,17 +30,23 @@ class EnvironmentUI(tk.Frame):
             # Label descrittiva a sinistra di ogni campo
             tk.Label(frame, text=label_text, width=10, anchor="w").pack(side=tk.LEFT) # Imposta l'ancoraggio a sinistra
             # Entry per l'inserimento del valore
-            entry = tk.Entry(frame)
+            var = tk.StringVar()
+            entry = tk.Entry(frame, textvariable=var)
             entry.pack(fill=tk.X, expand=True, padx=5)
+
+            self.vars[field_name] = var
             self.entries[field_name] = entry
+
+            var.trace_add("write", lambda *args, field=field_name: self.save_field(field))
         
         # Checkbox per includere configurazioni generali di sistema
-        self.gconfigs_var = tk.BooleanVar()
+        self.gconfigs_var = tk.BooleanVar(value=self.manager.gconfigs)
         self.gconfigs_check = tk.Checkbutton(
-            self.main_frame,
-            text="Includi configurazioni generali del sistema (gconfigs)",
-            variable=self.gconfigs_var
-        )
+                self.main_frame,
+                text="Includi configurazioni generali del sistema (gconfigs)",
+                variable=self.gconfigs_var,
+                command=self.save_gconfigs
+            )
         self.gconfigs_check.pack(anchor="w", pady=10)
 
         # Frame per la spiegazione testuale sotto la checkbox
@@ -82,7 +87,6 @@ class EnvironmentUI(tk.Frame):
     # Raccoglie i valori correnti dai campi di input e checkbox
     def get_current_values(self):
         return {
-            "shell": self.entries["shell"].get(),
             "editor": self.entries["editor"].get(),
             "prompt": self.entries["prompt"].get(),
             "hostname": self.entries["hostname"].get(),
@@ -115,7 +119,6 @@ class EnvironmentUI(tk.Frame):
 
             # Aggiorna la UI con i nuovi valori importati
             self.set_current_values({
-                "shell": self.manager.shell,
                 "editor": self.manager.editor,
                 "prompt": self.manager.prompt,
                 "hostname": self.manager.hostname,
@@ -147,7 +150,6 @@ class EnvironmentUI(tk.Frame):
             self.update_status(f"Esportazione {filename} in corso...")
 
             # Aggiorna il manager con i valori correnti per esportarli
-            self.manager.shell = current_values["shell"]
             self.manager.editor = current_values["editor"]
             self.manager.prompt = current_values["prompt"]
             self.manager.hostname = current_values["hostname"]
@@ -163,12 +165,21 @@ class EnvironmentUI(tk.Frame):
             self.update_status("Errore durante l'esportazione")
             messagebox.showerror("Errore", f"Esportazione fallita:\n{str(e)}")
 
-    # Aggiorna i campi di input UI con i valori attualmente nel manager
+    # Metodo per salvare i dati realmente nel manager
+    def save_field(self, field_name):
+            value = self.vars[field_name].get()
+            setattr(self.manager, field_name, value)
+            self.update_status(f"Salvato {field_name} in RAM")
+
+        # Metodo che salva il valore checkbox nel manager
+    def save_gconfigs(self):
+            self.manager.gconfigs = self.gconfigs_var.get()
+            self.update_status("Salvato gconfigs in RAM")
+
+        # Aggiorna i campi UI dai valori nel manager
     def refresh_from_manager(self):
-        self.set_current_values({
-            "shell": self.manager.shell,
-            "editor": self.manager.editor,
-            "prompt": self.manager.prompt,
-            "hostname": self.manager.hostname,
-            "gconfigs": self.manager.gconfigs
-        })
+            for field in self.fields:
+                key = field[1]
+                self.vars[key].set(getattr(self.manager, key))
+            self.gconfigs_var.set(self.manager.gconfigs)
+

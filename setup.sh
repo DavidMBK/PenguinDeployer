@@ -72,7 +72,10 @@ echo "Terminal=true" >> "$DESKTOP_FILE"
 # Imposta permessi corretti (owner=utente corrente)
 chown "$SUDO_USER:" "$DESKTOP_FILE"
 chmod +x "$DESKTOP_FILE"
-chmod 644 "$DESKTOP_FILE"
+chmod 755 "$DESKTOP_FILE"  # 755 invece di 644 per abilitare l'esecuzione
+
+# Aggiungi attributo di esecuzione esplicito
+setfattr -n user.executable -v 1 "$DESKTOP_FILE"
 
 # 6. Installazione finale
 APPLICATIONS_DIR="$HOME/.local/share/applications"

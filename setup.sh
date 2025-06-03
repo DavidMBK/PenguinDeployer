@@ -9,49 +9,49 @@ VENV_DIR="$HOME/.penguindeployer_venv"   # La directory dove verrà creato l'amb
 DESKTOP_FILE="$APP_DIR/Penguin-Deployer.desktop"  # Percorso .dekstop 
 
 # 1. Verifica Python 3.12 specificamente
-PYTHON_VERSION_REQUIRED="3.12.3"
-PYTHON_CMD="python3.12.3"
+PYTHON_VERSION="3.12"  # Versione principale
+PYTHON_VERSION_FULL="3.12.3"  # Versione completa
+PYTHON_CMD="python3.12"  # Nome esatto del comando
 
 if ! command -v "$PYTHON_CMD" &> /dev/null; then
-    echo "Python $PYTHON_VERSION_REQUIRED non trovato"
+    echo "Python $PYTHON_VERSION_FULL non trovato"
     
     if command -v python3 &> /dev/null; then
         CURRENT_VERSION=$(python3 --version | cut -d' ' -f2)
-        echo "⚠ Trovata versione $CURRENT_VERSION invece di $PYTHON_VERSION_REQUIRED"
+        echo "⚠ Trovata versione $CURRENT_VERSION invece di $PYTHON_VERSION_FULL"
     fi
     
     if command -v apt-get &> /dev/null; then
-        echo "Installazione Python $PYTHON_VERSION_REQUIRED e venv..."
+        echo "Installazione Python $PYTHON_VERSION_FULL..."
+        
+        # Abilita deadsnakes PPA per avere versioni più recenti
+        echo "Aggiungo PPA deadsnakes..."
+        sudo add-apt-repository -y ppa:deadsnakes/ppa
         sudo apt-get update
         
-        # Prima prova a installare il pacchetto completo
-        if ! sudo apt-get install -y "python$PYTHON_VERSION_REQUIRED" "python$PYTHON_VERSION_REQUIRED-venv"; then
-            echo "❌ Pacchetto ufficiale non disponibile, provo con deadsnakes PPA..."
-            sudo add-apt-repository -y ppa:deadsnakes/ppa
-            sudo apt-get update
-            sudo apt-get install -y "python$PYTHON_VERSION_REQUIRED" "python$PYTHON_VERSION_REQUIRED-venv" || {
-                echo "❌ Fallita installazione Python $PYTHON_VERSION_REQUIRED";
-                echo "Soluzioni alternative:";
-                echo "1. pyenv install 3.12.3";
-                echo "2. Compilare da sorgente";
-                exit 1;
-            }
-        fi
+        # Installa la versione specifica
+        sudo apt-get install -y "python$PYTHON_VERSION" "python$PYTHON_VERSION-venv" || {
+            echo "❌ Fallita installazione Python $PYTHON_VERSION_FULL";
+            echo "Puoi provare manualmente con:";
+            echo "  sudo apt-get install python$PYTHON_VERSION python$PYTHON_VERSION-venv";
+            echo "Oppure usare pyenv:";
+            echo "  pyenv install $PYTHON_VERSION_FULL";
+            exit 1;
+        }
     else
-        echo "❌ Sistema non basato su apt. Alternative:";
-        echo "1. pyenv install 3.12.3";
-        echo "2. Compilare da sorgente";
+        echo "❌ Sistema non basato su apt. Puoi installare con:";
+        echo "pyenv install $PYTHON_VERSION_FULL";
         exit 1
     fi
 fi
 
 # Verifica modulo venv
 if ! "$PYTHON_CMD" -c "import ensurepip, venv" 2>/dev/null; then
-    echo "❌ Modulo venv mancante per Python $PYTHON_VERSION_REQUIRED";
+    echo "❌ Modulo venv mancante per Python $PYTHON_VERSION_FULL";
     if command -v apt-get &> /dev/null; then
-        sudo apt-get install -y "python$PYTHON_VERSION_REQUIRED-venv" || exit 1
+        sudo apt-get install -y "python$PYTHON_VERSION-venv" || exit 1
     else
-        echo "Installa manualmente il modulo venv per Python $PYTHON_VERSION_REQUIRED";
+        echo "Installa manualmente il modulo venv per Python $PYTHON_VERSION_FULL";
         exit 1
     fi
 fi
@@ -69,7 +69,7 @@ if ! dpkg -l python3-tk &> /dev/null; then
 fi
 
 # 2. Crea/aggiorna virtualenv
-echo "Configurazione ambiente Python $PYTHON_VERSION_REQUIRED..."
+echo "Configurazione ambiente Python $PYTHON_VERSION_FULL..."
 "$PYTHON_CMD" -m venv "$VENV_DIR" || { echo "❌ Errore creazione virtualenv"; exit 1; }  # Crea un ambiente virtuale Python, esce in caso di errore
 "$VENV_DIR/bin/pip" install --upgrade pip  # Aggiorna pip nel venv
 "$VENV_DIR/bin/pip" install -r "$APP_DIR/requirements.txt"  # installa pip requirements in venv

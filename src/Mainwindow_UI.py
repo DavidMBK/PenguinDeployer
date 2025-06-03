@@ -73,7 +73,10 @@ class Mainwindow(tk.Frame):
     def show_frame(self, frame_name):
         # Distruggi frame corrente se esiste
         if self.current_frame:
+            if hasattr(self.current_frame, "save_changes_to_manager"):
+                self.current_frame.save_changes_to_manager()
             self.current_frame.pack_forget()
+
 
         for frame in self.moduleframes:
             if frame.__class__.__name__ == frame_name:

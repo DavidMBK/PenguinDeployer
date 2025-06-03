@@ -172,3 +172,12 @@ class EnvironmentUI(tk.Frame):
             "hostname": self.manager.hostname,
             "gconfigs": self.manager.gconfigs
         })
+
+    # Metodo per salvare i dati realmente nel manager
+    def save_changes_to_manager(self):
+        current_values = self.get_current_values()
+        self.manager.shell = current_values["shell"]
+        self.manager.editor = current_values["editor"]
+        self.manager.prompt = current_values["prompt"]
+        self.manager.hostname = current_values["hostname"]
+        self.manager.gconfigs = current_values["gconfigs"]
